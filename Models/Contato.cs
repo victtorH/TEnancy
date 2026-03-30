@@ -15,6 +15,7 @@ namespace ModuloMVC.Models
         public bool Status { get; private set; }
         public string? Descricao { get; private set; }
 
+        public ICollection<Tarefa> Tarefas { get; private set; }
 
         public Contato(string nome, string email, string telefone, string? descricao)
         {
@@ -23,7 +24,7 @@ namespace ModuloMVC.Models
             {
                 throw new ArgumentException("O Telefone e Email são obrigatórios.");
             }
-                
+
 
             Nome = nome;
             Email = email;
@@ -37,7 +38,7 @@ namespace ModuloMVC.Models
 
         public void AtualizarDados(string nome, string email, string telefone, bool status, string? descricao)
         {
-            Validar(nome,email, telefone);
+            Validar(nome, email, telefone);
 
             Nome = nome;
             Email = email;
@@ -47,7 +48,7 @@ namespace ModuloMVC.Models
         }
 
 
-        private void Validar(string nome, string email ,string telefone)
+        private void Validar(string nome, string email, string telefone)
         {
 
 

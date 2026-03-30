@@ -1,0 +1,513 @@
+@model ModuloMVC.ViewModels.TarefaEdicaoViewModel
+
+<style>
+    /* Container e Tipografia Base */
+    .task-edit-container {
+        color: #1a1a1a;
+        /* Preto Base */
+    }
+
+    /* --- LADO ESQUERDO: Dados --- */
+    .current-data-section h2 {
+        font-weight: 600;
+        font-size: 3.2rem;
+        letter-spacing: -1.5px;
+    }
+
+    .data-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .data-label {
+        display: block;
+        font-size: 0.85rem;
+        color: #6c757d;
+        /* Cinza médio */
+        margin-bottom: 0.2rem;
+        font-weight: 500;
+    }
+
+    .data-value {
+        font-size: 1.1rem;
+        font-weight: 400;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* --- LADO DIREITO: Formulário --- */
+    .custom-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Inputs minimalistas (Cinza) com Foco (Azul) */
+    .custom-input {
+        background-color: #f4f4f5;
+        /* Cinza claro idêntico à imagem */
+        border: 1px solid transparent;
+        border-radius: 10px;
+        padding: 0.8rem 1.2rem;
+        font-size: 1rem;
+        color: #1a1a1a;
+        transition: all 0.25s ease;
+    }
+
+    .custom-input:focus {
+        background-color: #ffffff;
+        border-color: #0d6efd;
+        /* Azul de Foco */
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
+        /* Halo azul suave */
+        outline: none;
+    }
+
+    /* --- LISTA DE CONTATOS --- */
+    .contact-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        max-height: 280px;
+        overflow-y: auto;
+        padding-right: 8px;
+        /* Espaço para o scrollbar */
+    }
+
+    /* Customização de Scrollbar para ficar elegante */
+    .contact-list-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .contact-list-container::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .contact-card {
+        display: block;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .contact-checkbox {
+        display: none;
+        /* Esconde o checkbox feio nativo */
+    }
+
+    .contact-card-content {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        background-color: #f4f4f5;
+        /* Cinza claro */
+        border-radius: 10px;
+        border: 2px solid transparent;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .contact-avatar {
+        width: 42px;
+        height: 42px;
+        background-color: #e2e8f0;
+        /* Cinza um pouco mais escuro */
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #475569;
+        margin-right: 15px;
+        transition: all 0.2s ease;
+    }
+
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .contact-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #1a1a1a;
+    }
+
+    .contact-email {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    /* --- ESTADO SELECIONADO (Usando o AZUL) --- */
+    /* Heurística 1: Visibilidade do status do sistema */
+    .contact-checkbox:checked+.contact-card-content {
+        background-color: rgba(13, 110, 253, 0.05);
+        /* Fundo azul bem claro */
+        border-color: #0d6efd;
+        /* Borda Azul */
+    }
+
+    .contact-checkbox:checked+.contact-card-content .contact-avatar {
+        background-color: #0d6efd;
+        /* Círculo Azul */
+        color: #ffffff;
+        /* Letra Branca */
+    }
+
+    /* --- BOTÃO SUBMIT --- */
+    .custom-submit-btn {
+        background-color: #1a1a1a;
+        /* Preto */
+        color: #ffffff;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        border: none;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .custom-submit-btn:hover {
+        background-color: #333333;
+        color: #ffffff;
+    }
+
+    .custom-submit-btn:active {
+        transform: scale(0.98);
+        /* Feedback tátil visual */
+    }
+
+    .back-link {
+        color: #797979;
+        /* Cinza médio, elegante e discreto */
+        text-decoration: none;
+        font-weight: 900;
+        transition: color 0.2s ease;
+
+    }
+
+    .back-link svg {
+        position: absolute;
+        top: 8.7rem;
+        left: 15rem;
+    }
+
+    .back-link:hover {
+        color: #1a1a1a;
+        /* Fica preto ao passar o mouse (Feedback visual) */
+        text-decoration: none;
+    }
+
+    /* --- SELEÇÃO DE STATUS (Radio Buttons Segmentados) --- */
+    .status-options-container {
+        width: 100%;
+    }
+
+    .status-radio {
+        display: none;
+        /* Esconde o botão rádio nativo do navegador */
+    }
+
+    .status-card {
+        cursor: pointer;
+        margin: 0;
+        user-select: none;
+        /* Evita que o texto seja selecionado ao clicar rápido */
+    }
+
+    /* Estado Padrão (Inativo - Cinza) - Lei da Similaridade */
+    .status-card-content {
+        background-color: #f4f4f5;
+        border: 2px solid transparent;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.25s ease;
+    }
+
+    /* Efeito ao passar o mouse */
+    .status-card:hover .status-card-content {
+        background-color: #e2e8f0;
+        color: #1a1a1a;
+    }
+
+    /* Estado Selecionado (Ativo - Preto) - Lei da Figura-Fundo */
+    .status-radio:checked+.status-card-content {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        border-color: #1a1a1a;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        /* Sutil elevação */
+    }
+</style>
+
+<div class="container my-5 task-edit-container">
+    <div class="row gx-5">
+
+        <div class="col-lg-5 mb-3 mb-md-0 current-data-section">
+
+            <a href="@Url.Action("Index", "Tarefa")" onclick="window.history.back(); return false;" class="back-link d-inline-block mb-3 text-decoration-none text-muted">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                     class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                          d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+                </svg>
+            </a>
+
+            <h2 class="mb-4">Detalhes da Tarefa</h2>
+
+            <div class="data-group">
+                <span class="data-label">Título:</span>
+                <p class="data-value">@Model.TituloAtual</p>
+            </div>
+
+            <div class="data-group">
+                <span class="data-label">Vencimento:</span>
+                <p class="data-value">@(Model.VencimentoAtual?.ToString("dd/MM/yyyy") ?? "Sem data de vencimento")</p>
+            </div>
+
+            <div class="data-group">
+                <span class="data-label">Descrição:</span>
+                <p class="data-value">@Model.DescricaoAtual</p>
+            </div>
+
+            <div class="data-group">
+                <span class="data-label">Status Atual:</span>
+                <p class="data-value d-flex align-items-center gap-2">
+                    <span class="status-dot @(Model.StatusAtual.ToString().ToLower())"></span>
+                </p>
+            </div>
+
+            <div class="data-group mt-4">
+                <span class="data-label">Contatos Atuais:</span>
+                <ul class="list-unstyled">
+                    @if (Model.ContatosEnvolvidosAtuais != null && Model.ContatosEnvolvidosAtuais.Any())
+                    {
+                        foreach (var contato in Model.ContatosEnvolvidosAtuais)
+                        {
+                            <li class="data-value text-muted">- @contato.Nome</li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="data-value text-muted">Nenhum contato atribuído.</li>
+                    }
+                </ul>
+            </div>
+
+            <div class="mt-5 pt-4 border-top">
+                <button type="button"  class="btn btn-link text-danger p-0 text-decoration-none custom-delete-btn"
+                        data-bs-toggle="modal" data-bs-target="#modalExcluirTarefa">
+                    <i class="bi bi-trash3"></i> Excluir Tarefa
+                </button>
+            </div>
+        </div>
+
+
+
+        <div class="col-md-7">
+            <form id="formEditTarefa" asp-action="Editar" method="post" novalidate>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label asp-for="Titulo" class="form-label custom-label">Título</label>
+                        <input type="text" asp-for="Titulo" class="form-control custom-input" required>
+                        <span asp-validation-for="Titulo" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label asp-for="Descricao" class="form-label custom-label">Descrição</label>
+                        <textarea asp-for="Descricao" class="form-control custom-input" rows="4" required></textarea>
+                        <span asp-validation-for="Descricao" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label asp-for="Vencimento" class="form-label custom-label">Vencimento</label>
+                        <input type="date" asp-for="Vencimento" class="form-control custom-input" required>
+                    </div>
+                </div>
+
+                <div class="status-section mb-4">
+                    <label class="form-label custom-label mb-3">Status da Tarefa</label>
+
+                    <div class="status-options-container d-flex gap-2">
+                        <label class="status-card flex-fill text-center">
+                            <input type="radio" name="Status" value=1 class="status-radio" @((int)Model.Status == 1 ?
+                                                                                                                                                                                                                                                    "checked" : "") required>
+                            <div class="status-card-content py-2 px-3">Pendente</div>
+                        </label>
+
+                        <label class="status-card flex-fill text-center">
+                            <input type="radio" name="Status" value=2 class="status-radio" @((int)Model.Status == 2 ?
+                                                                                                                                                                                                                                                                       "checked" : "")>
+                            <div class="status-card-content py-2 px-3">Em andamento</div>
+                        </label>
+
+                        <label class="status-card flex-fill text-center">
+                            <input type="radio" name="Status" value=3 class="status-radio" @((int)Model.Status == 3 ?
+                                                                                                                                                                                                                                                   "checked" : "")>
+                            <div class="status-card-content py-2 px-3">Concluído</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="contact-section mb-4">
+                    <h5 class="mb-3 custom-label">Chamar para tarefa</h5>
+
+                    <div class="contact-list-container">
+                        @foreach (var contato in Model.TodosContatosDisponiveis)
+                        {
+                            bool isSelected = Model.ContatosSelecionadosIds != null &&
+                        Model.ContatosSelecionadosIds.Contains(contato.Id);
+
+                            <label class="contact-card d-block mb-2">
+                                <input type="checkbox" name="ContatosSelecionadosIds" value="@contato.Id"
+                                       class="contact-checkbox" @(isSelected ? "checked" : "")>
+
+                                <div class="contact-card-content d-inline-block ms-2">
+                                    <span class="contact-name fw-bold">@contato.Nome</span>
+                                    <span class="contact-email text-muted small ms-2">@contato.Email</span>
+                                </div>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary custom-submit-btn w-100 py-3" id="btnSubmit">
+                    <span class="btn-text fw-bold">Salvar Alterações</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalExcluirTarefa" tabindex="-1" aria-labelledby="modalExcluirTarefaLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger" id="modalExcluirTarefaLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body text-secondary mt-2">
+                Tem certeza que deseja excluir a tarefa <strong>"@Model.TituloAtual"</strong>? <br>
+                Esta ação é permanente e não poderá ser desfeita.
+            </div>
+
+            <div class="modal-footer border-0 pt-1 pb-3">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                        style="border-radius: 8px; font-weight: 500;">Cancelar</button>
+
+                <form action="/Tarefa/Excluir" method="post" class="m-0">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger" style="border-radius: 8px; font-weight: 500;">Sim,
+                        Excluir</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+        @if (TempData["ExcluirTarefa"] != null && TempData["ExcluirTarefa"].ToString() != "1")
+        {
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+            <div id="toastNotificacao" class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert"
+                 aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
+                <div class="d-flex">
+                    <div class="toast-body fw-medium">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ExcluirTarefa"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Fechar"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+           @if (TempData["CriarDublicado"] != null && TempData["CriarDublicado"].ToString() != "1")
+    {
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+            <div id="toastNotificacao" class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert"
+                 aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
+                <div class="d-flex">
+                    <div class="toast-body fw-medium">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["CriarDublicado"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Fechar"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const sections = document.querySelectorAll('.task-edit-container > div');
+            sections.forEach((section, index) => {
+                section.style.opacity = 0;
+                section.style.transition = `opacity 0.6s ease ${index * 0.1}s`;
+                setTimeout(() => section.style.opacity = 1, 10); // Trigger transition
+            });
+
+            const inputs = document.querySelectorAll('.custom-input');
+            inputs.forEach(input => {
+
+                input.addEventListener('mouseover', () => {
+
+                    input.style.boxShadow = '0 0 0 2px rgba(13, 110, 253, 0.1)';
+                });
+                input.addEventListener('mouseout', () => {
+                    input.style.boxShadow = 'none';
+                });
+
+                input.addEventListener('focus', () => {
+
+                });
+            });
+
+   
+            const contactCards = document.querySelectorAll('.contact-card');
+            contactCards.forEach(card => {
+                const content = card.querySelector('.contact-card-content');
+                const avatar = card.querySelector('.contact-avatar');
+
+
+                card.addEventListener('click', () => {
+
+                    if (card.querySelector('input').checked) {
+
+                    }
+                });
+
+      
+            });
+
+ 
+            const btnSubmit = document.getElementById('btnSubmit');
+
+            btnSubmit.addEventListener('mouseover', () => {
+
+            });
+            btnSubmit.addEventListener('mouseout', () => {
+
+            });
+
+
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastEl = document.getElementById('toastNotificacao');
+            if (toastEl) {
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        });
+    </script>

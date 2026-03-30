@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ModuloMVC.ViewModels
 {
+
     public class ContatoViewModel
     {
         [Required(ErrorMessage = "O nome é obrigatorio")]
+        public int Id {get; set;}
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "O e-mail é obrigatorio")]

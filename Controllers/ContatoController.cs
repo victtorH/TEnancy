@@ -24,12 +24,15 @@ namespace ModuloMVC.Controllers
         }
 
 
-        public IActionResult Index()
-        {
-
-            var ListaContatos = _service.ListarTodos();
-            return View(ListaContatos);
-        }
+[HttpGet]
+// Os nomes aqui precisam bater com os params.append('nome_aqui', valor) do JS!
+public async Task<IActionResult> Index(string? nome, string? numero, string? email, List<bool>? status)
+{
+    // Passamos todos os parâmetros para o Service resolver
+    var contatosFiltrados = await _service.ListarTodosAsync(nome, numero, email, status);
+    
+    return View(contatosFiltrados);
+}
 
         [HttpGet("Criar")]
         public IActionResult Criar()

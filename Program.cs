@@ -11,6 +11,7 @@ builder.Services.AddDbContext<AgendaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConectandoDb")));
 
 builder.Services.AddScoped<ContatoService>();
+builder.Services.AddScoped<TarefaService>();
 
 builder.Services.AddControllersWithViews();
 

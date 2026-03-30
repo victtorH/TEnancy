@@ -1,0 +1,332 @@
+@model ModuloMVC.ViewModels.TarefaViewModel
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Criar Nova Tarefa";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+/* ==========================================================================
+   VARIÁVEIS DE COR E TIPOGRAFIA (Consistência e Padronização - Nielsen 4)
+   ========================================================================== */
+:root {
+    --bg-page: #121212;        /* Preto de fundo */
+    --bg-card: #1e1e1e;        /* Cinza escuro para o formulário (Figura-Fundo) */
+    --bg-input: #2a2a2a;       /* Cinza para campos de digitação */
+    --accent-blue: #0d6efd;    /* Azul para foco e ações principais */
+    --text-main: #f8f9fa;      /* Branco suave para leitura */
+    --text-muted: #a1a1aa;     /* Cinza claro para textos de apoio */
+}
+
+/* ==========================================================================
+   ESTRUTURA GLOBAL E FIGURA-FUNDO (Gestalt)
+   ========================================================================== */
+.page-wrapper {
+    background-color: var(--bg-page);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-main);
+    border-radius: 2rem;
+}
+
+/* O cartão do formulário salta aos olhos em relação ao fundo (Figura-Fundo).
+   Estética e Design Minimalista (Nielsen 8): sem bordas duras, apenas sombras. */
+.task-form-card {
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    padding: 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   CAMPOS DE ENTRADA (Prevenção de Erros e Status do Sistema - Nielsen 1 e 5)
+   ========================================================================== */
+/* Proximidade (Gestalt): Labels e inputs agrupados visualmente */
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--text-muted) !important;
+}
+
+.dark-input {
+    background-color: var(--bg-input) !important;
+    border: 1px solid transparent !important;
+    border-radius: 10px;
+    color: var(--text-main) !important;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease; /* Transição suave para feedback visual */
+}
+
+.dark-input::placeholder {
+    color: #6c757d;
+}
+
+/* Visibilidade do Status do Sistema (Nielsen 1): Deixa claro onde o usuário está focado */
+.dark-input:focus {
+    background-color: #242424 !important;
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15) !important;
+    outline: none;
+}
+
+/* Ajuste do ícone de calendário no input group */
+.input-group-text.dark-input {
+    background-color: var(--bg-input) !important;
+    color: var(--text-muted) !important;
+}
+
+/* ==========================================================================
+   PAINEL DE CONTATOS (Similaridade e Continuidade - Gestalt)
+   ========================================================================== */
+.contacts-panel {
+    background-color: #1a1a1a !important; /* Um tom ligeiramente mais escuro para agrupar */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Eficiência e Flexibilidade de Uso (Nielsen 7): Scroll interno se houver muitos contatos */
+.contacts-rows-container {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Scrollbar minimalista */
+.contacts-rows-container::-webkit-scrollbar {
+    width: 6px;
+}
+.contacts-rows-container::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 10px;
+}
+
+/* Similaridade (Gestalt): Linhas idênticas criam um padrão fácil de entender */
+.contact-row {
+    transition: background-color 0.2s;
+    border-radius: 8px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.contact-row:hover {
+    background-color: rgba(255, 255, 255, 0.03); /* Feedback visual de interatividade */
+}
+
+.avatar-circle {
+    width: 36px;
+    height: 36px;
+    background-color: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   CHECKBOX CUSTOMIZADO (Visibilidade do Status e Reconhecimento)
+   ========================================================================== */
+/* Melhoramos o checkbox padrão do Bootstrap para ficar mais visível no tema escuro */
+.contact-checkbox {
+    width: 1.2rem;
+    height: 1.2rem;
+    background-color: var(--bg-input);
+    border: 1px solid #444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.contact-checkbox:checked {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.contact-checkbox:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* ==========================================================================
+   BOTÕES E AÇÕES (Controle e Liberdade / Prevenção de Erros)
+   ========================================================================== */
+/* Botão Principal: Alto contraste, atrai o olhar imediatamente (Figura-Fundo) */
+.btn-submit-task {
+    background-color: var(--accent-blue);
+    border: none;
+    transition: transform 0.1s, background-color 0.2s;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.btn-submit-task:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-2px); /* Sensação tátil de interatividade */
+}
+
+.btn-submit-task:active {
+    transform: scale(0.98);
+}
+
+/* Ações Secundárias (Limpar e Cancelar) 
+   Controle e Liberdade do Usuário (Nielsen 3): Saídas de emergência claras.
+   Estão agrupadas (Proximidade) e têm baixo contraste para não competirem com o botão Salvar. */
+.secondary-actions {
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.btn-action {
+    color: var(--text-muted) !important;
+    transition: color 0.2s;
+    padding: 0;
+}
+
+.btn-action:hover {
+    color: var(--text-main) !important;
+    text-decoration: underline !important;
+}
+</style>
+
+<div class="container-fluid page-wrapper px-0">
+    <div class="browser-window">
+        <header class="text-center border-dark">
+            <h1 class="display-5 fw-bold  pt-3 text-light">Criar Nova Tarefa</h1>
+            <p class="text-muted fs-5">Preencha os campos abaixo</p>
+        </header>
+
+        <div class="container d-flex justify-content-center">
+            <div class="col-lg-8">
+                <form id="createTaskForm" class="task-form-card shadow-lg" method="post" asp-action="Criar">
+
+                    <section class="task-data-section mb-4">
+
+                        <section class="task-data-section mb-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="Titulo" class="form-label text-light">Título da Tarefa</label>
+                                <input asp-for="Titulo" class="form-control form-input dark-input"
+                                       placeholder="Ex: Fazer compras" />
+                                <span class="text-danger" asp-validation-for="Titulo"></span>
+
+                                <label asp-for="Descricao" class="form-label text-light">Descrição</label>
+                                <textarea asp-for="Descricao" class="form-control form-input dark-input"
+                                          placeholder="Detalhes da tarefa..." rows="3"></textarea>
+                                <span class="text-danger" asp-validation-for="Descricao"></span>
+
+                                <label asp-for="Vencimento" class="form-label text-light">Data de Vencimento</label>
+                                <div class="input-group">
+                                    <span class="input-group-text dark-input border-end-0 text-light"><i
+                                        class="bi bi-calendar3"></i></span>
+                                        <input asp-for="Vencimento" type="date"
+                                               class="form-control form-input dark-input border-start-0" />
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="Vencimento"></span>
+                                </div>
+                            </section>
+
+                            <hr class="border-dark opacity-25 my-4" />
+
+                            <section id="contactsListSection" class="contacts-panel rounded-4 p-3 bg-dark-subtle mb-4">
+                                <h2 class="h5 fw-bold text-light mb-1 contacts-header">Contatos Envolvidos</h2>
+                                <p class="text-muted fs-7 mb-3 subtitle-text">chamar para tarefa</p>
+
+                                <div class="contacts-rows-container">
+                                    @if (Model != null && Model.ContatosEnvolvidos != null &&
+                                    Model.ContatosEnvolvidos.Any())
+                                    {
+                                        @foreach (var contact in Model.ContatosEnvolvidos)
+                                        {
+                                            // Verifica se o ID deste contato já foi marcado (útil caso a tela recarregue com erro)
+                                            bool isChecked = Model.ContatosSelecionadosIds != null &&
+                                    Model.ContatosSelecionadosIds.Contains(contact.Id);
+
+                                            <div
+                                                class="contact-row d-flex align-items-center justify-content-between py-2 border-bottom border-dark border-opacity-10">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="avatar-circle">
+                                                        @(string.IsNullOrEmpty(contact.Nome) ? "" : contact.Nome.Substring(0,
+                                                1).ToUpper())
+                                                    </div>
+                                                    <span class="contact-name text-light fw-medium">@contact.Nome</span>
+                                                </div>
+
+                                                <div class="form-check m-0 p-0">
+                                                    <input type="checkbox" name="ContatosSelecionadosIds" value="@contact.Id"
+                                                           id="@contact.Id" class="form-check-input contact-checkbox styled-checkbox"
+                                                    @(isChecked ? "checked" : "") />
+                                                    <label class="form-check-label invisible" for="@contact.Id"></label>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="text-center text-muted py-3">Nenhum contato disponível para selecionar.
+                                        </div>
+                                    }
+                                </div>
+
+                                <small class="text-muted mt-2 d-block text-center fs-8">Selecione quem participará</small>
+                            </section>
+                            <button type="submit" id="btnSubmitTask"
+                                    class="btn btn-primary btn-submit-task btn-lg px-5 text-light w-100 py-3 rounded-pill fw-bold">
+                                <i class="bi bi-check2-circle me-2 fs-5"></i> Criar Tarefa
+                            </button>
+
+                        
+                            <div class="secondary-actions d-flex gap-4">
+                                <button type="reset"
+                                        class="btn btn-link text-muted text-decoration-none btn-action fs-7">Limpar</button>
+                                <a asp-action="Index"
+                                   class="btn btn-link text-muted text-decoration-none btn-action fs-7">Cancelar</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <footer class="text-center py-4 mt-5 border-top border-dark text-muted fs-8">
+                    Sistema de Tarefas | © @DateTime.Now.Year
+                </footer>
+            </div>
+        </div>
+
+            @if (TempData["CriarDublicado"] != null && TempData["CriarDublicado"].ToString() != "1")
+    {
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+            <div id="toastNotificacao" class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert"
+                 aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
+                <div class="d-flex">
+                    <div class="toast-body fw-medium">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["CriarDublicado"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Fechar"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script>
+                document.addEventListener("DOMContentLoaded", function () {
+            var toastEl = document.getElementById('toastNotificacao');
+            if (toastEl) {
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+                resetCreateTaskForm();
+            }
+        });
+
+        function resetCreateTaskForm() {
+    const form = document.getElementById('createTaskForm');
+    
+    if (form) {
+        // 1. Limpa todos os valores nativos dos inputs
+        form.reset();
+        
+        // 2. Remove as marcações visuais de erro do Bootstrap (bordas vermelhas)
+        form.classList.remove('was-validated');
+    }
+}
+    </script>
+

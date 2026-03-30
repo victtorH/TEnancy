@@ -1,0 +1,723 @@
+@model IEnumerable<ModuloMVC.Models.Tarefa>
+
+@{
+    ViewData["Title"] = "Minhas Tarefas";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+:root {
+    --card-bg: #ffffff;
+    --card-dark: #121212;
+    --accent-color: #0d6efd;
+    --text-placeholder: #adb5bd;
+}
+
+/* ==========================================
+   ESTRUTURA DA PÁGINA E ROLAGEM
+   ========================================== */
+.page-wrapper { 
+    background-color: #f8f9fa; 
+    min-height: 100vh; 
+}
+
+/* Container de Rolagem Lateral Limpo */
+.tasks-horizontal-scroll {
+    overflow-x: auto;
+    padding: 40px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tasks-horizontal-scroll::-webkit-scrollbar { 
+    display: none; 
+}
+
+.tasks-track {
+    margin: 0px;
+    display: flex;
+    gap: 30px;
+    width: max-content;
+}
+
+/* ==========================================
+   CARDS DE TAREFAS (Gestalt: Região Comum)
+   ========================================== */
+.task-card {
+     text-decoration: none;
+    background: var(--card-bg);
+    width: 320px;
+    min-height: 480px;
+    border-radius: 28px;
+    padding: 55px 35px 45px 35px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 2px solid rgba(0,0,0,0.05);
+    color: #121212;
+}
+
+.task-card:hover {
+    transform: translateY(-10px);
+    color: #121212;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    margin: 0rem 1rem;
+
+    .card-edit-icon{
+        transform: translateY(-45px);
+        opacity: 1;
+    }
+}
+
+.card-edit-icon{
+   position: absolute;
+   bottom: -35px; 
+    right: 10px;
+    width: 36px;
+    height: 36px;
+  background-color: #dcfce7; /* Verde suave de sucesso/edição */
+    color: #166534;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transform: translateY(1px);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    opacity: 0;
+}
+
+
+/* ==========================================
+   TIPOGRAFIA E CONTEÚDO DO CARD
+   ========================================== */
+.task-number {
+    position: absolute;
+    top: 1.3rem;
+    right: 35px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #eee;
+}
+
+.task-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    min-height: 2.4em; /* Mantém consistência visual mesmo sem título longo */
+}
+
+.task-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #555;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    margin-bottom: 20px;
+}
+
+/* Estilo para dados ausentes */
+.text-placeholder {
+    color: var(--text-placeholder);
+    font-weight: 400;
+}
+
+/* ==========================================
+   AVATARES E AÇÕES DO CARD
+   ========================================== */
+.avatar-stack { 
+    display: flex; 
+    align-items: center; 
+}
+
+.avatar-mini {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    border: 2px solid #fff;
+    margin-left: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.avatar-mini:first-child { 
+    margin-left: 0; 
+}
+
+.task-actions {
+    position: absolute;
+    bottom: 35px;
+    right: 35px;
+    display: flex;
+ 
+}
+
+
+.btn-task-action:hover { 
+    opacity: 1; 
+}
+
+/* ==========================================
+   BOTÃO / CARD DE ADICIONAR TAREFA
+   ========================================== */
+.add-task-card {
+    width: 320px;
+    border-radius: 28px;
+    border: 2px dashed #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #bbb;
+    transition: all 0.3s;
+     min-height: 480px;
+}
+
+.add-task-card:hover { 
+    border-color: var(--accent-color); 
+    color: var(--accent-color); 
+    background: #fff; 
+   
+}
+
+
+/* Variante menor de botão de adicionar */
+/* ==========================================
+   BOTÃO EXPANSÍVEL (Novo Contato)
+   ========================================== */
+
+/* Estado Inicial: Apenas o Círculo (Mouse Out) */
+.btn-create-contact {
+    display: inline-flex;
+    align-items: center;
+    background-color: #1a1a24; /* Fundo preto elegante (Figura/Fundo forte) */
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 50px;
+    height: 48px;
+    /* O "Pulo do Gato": Começa travado no tamanho exato de um círculo */
+    max-width: 48px; 
+    overflow: hidden;
+    
+    /* Transição elástica e fluida para largura, cor e posição */
+    transition: max-width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                background-color 0.3s ease, 
+                transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem; /* Descola do texto de cima */
+}
+
+/* O container do Ícone (Garante que o círculo não esmague o ícone) */
+.btn-create-contact .add-icon-wrapper {
+    min-width: 48px; /* Largura mínima fixa igual à altura */
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: transform 0.4s ease; /* Para a giradinha do hover */
+}
+
+/* O Texto (Invisível no início) */
+.btn-create-contact .btn-text {
+    white-space: nowrap; /* Impede o texto de quebrar linha */
+    font-weight: 500;
+    opacity: 0; /* Invisível */
+    transform: translateX(-10px); /* Levemente puxado para a esquerda */
+    transition: all 0.3s ease;
+}
+
+/* --- ESTADO ATIVO: O EFEITO HOVER (Mouse In) --- */
+.btn-create-contact:hover {
+    max-width: 200px; /* Abre espaço suficiente para o texto caber */
+    transform: translateY(-2px); /* Levanta o botão (Sensação tátil) */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+}
+
+/* Faz o ícone '+' dar uma leve e charmosa girada de 90 graus */
+.btn-create-contact:hover .add-icon-wrapper {
+    transform: rotate(90deg);
+}
+
+/* Revela o texto e empurra ele pro lugar certo */
+.btn-create-contact:hover .btn-text {
+    opacity: 1;
+    transform: translateX(0);
+    padding-right: 1.5rem; /* Cria o espaço no final da pílula */
+}
+/* ==========================================
+   COMPONENTE DE FILTRO (Dropdown)
+   ========================================== */
+.btn-filter {
+    position: absolute;
+    top: 1rem;
+    margin-right: .5rem;
+    background-color: transparent;
+    border: 1px solid #e2e8f0; 
+    color: #525252;
+    border-radius: 2rem; 
+    padding: 0.5rem 1.2rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-filter:hover, 
+.btn-filter[aria-expanded="true"] {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1a1a24;
+}
+
+.btn-filter::after {
+    display: none;
+}
+
+.filter-menu {
+    border-radius: 16px; 
+    min-width: 220px;
+    margin-top: 0.5rem !important;
+    animation: fadeInDropdown 0.2s ease;
+}
+
+.custom-filter-check {
+    cursor: pointer;
+    margin: 0;
+    padding-left: 1.8rem;
+}
+
+.custom-filter-check .form-check-input {
+    cursor: pointer;
+    border-color: #cbd5e1;
+}
+
+.custom-filter-check .form-check-input:checked {
+    background-color: #1a1a24; 
+    border-color: #1a1a24;
+}
+
+.custom-filter-check:hover .form-check-label {
+    color: #1a1a24 !important;
+}
+
+.custom-input-filter {
+    background-color: #f4f4f5 !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px;
+    color: #1a1a24;
+}
+
+.custom-input-filter:focus {
+    background-color: #ffffff !important;
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1) !important;
+}
+
+.filter-section .form-label {
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.7rem !important;
+}
+
+.fs-7 { 
+    font-size: 0.85rem !important; 
+}
+
+/* Animação suave ao abrir 
+keyframes fadeInDropdown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}*/
+
+/* ==========================================
+   QUICK TABS (Atalhos de Visualização)
+   ========================================== */
+.quick-tabs {
+    /* Fundo cinza bem suave simulando uma "trilha" */
+    background-color: #f1f5f9 !important; 
+    border-color: #e2e8f0 !important;
+}
+
+.quick-tab {
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.quick-tab:hover {
+    color: #1a1a24 !important;
+}
+
+/* A pílula ativa ganha fundo branco e sombra para "saltar" (Figura-Fundo) */
+.quick-tab.active {
+    background-color: #ffffff;
+    color: #1a1a24 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    font-weight: 600;
+}
+
+MELHORIA DE UX: INPUT DE DATA
+   ========================================== */
+
+/* Transforma o cursor em mãozinha para indicar interatividade */
+input[type="date"] {
+    cursor: pointer;
+}
+
+/* Esconde o ícone de calendário nativo (feio) do WebKit (Chrome/Edge/Safari) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+/* Se você estiver usando aquele input-group com o ícone customizado do lado */
+.input-group-text {
+    cursor: pointer; /* O ícone customizado também deve parecer clicável */
+}
+</style>
+
+
+    <header class="d-flex flex-column justify-content-center align-items-center text-center mb-5">
+        <h1 class="display-6 py-3 fw-bold">Serviço & Tarefas</h1>
+<div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="quick-tabs d-flex gap-2 p-1 bg-light rounded-pill border">
+        <a asp-action="Index" asp-route-visao="atrasadas" 
+           class="quick-tab text-decoration-none  @(ViewBag.VisaoAtual == "atrasadas" ? "active" : "text-muted")">
+           Atrasadas
+        </a>
+        <a asp-action="Index" asp-route-visao="hoje" 
+           class="quick-tab text-decoration-none @(ViewBag.VisaoAtual == "hoje" ? "active" : "text-muted")">
+           Hoje em diante
+        </a>
+        <a asp-action="Index" asp-route-visao="todas" 
+           class="quick-tab text-decoration-none  @(ViewBag.VisaoAtual == "todas" ? "active" : "text-muted")">
+           Todas
+        </a>
+    </div>
+</div>
+
+ 
+    </header>
+<div class="container-fluid d-flex justify-content-between">
+
+
+            <a asp-action="Criar" class="btn-create-contact">
+               <div class="add-icon-wrapper">
+                    <i class="bi bi-plus-lg"></i>
+                </div> <span class="btn-text">Novo Contato</span> 
+            </a>
+
+
+
+
+
+
+
+<div class="dropdown d-inline-block filter-wrapper">
+    <button class="btn btn-filter dropdown-toggle position-relative" type="button" id="dropdownFiltro" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+        <i class="bi bi-funnel me-1"></i> Filtrar
+        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle filter-badge d-none" id="badgeFiltroAtivo"></span>
+    </button>
+
+    <div class="dropdown-menu filter-menu shadow-lg border-0 p-4" aria-labelledby="dropdownFiltro" style="width: 300px;">
+        <h6 class="dropdown-header px-0 text-dark fw-bold mb-3 fs-6">Refinar Busca</h6>
+
+        <div class="filter-section mb-3">
+            <label for="filtroTitulo" class="form-label fs-7 fw-medium text-muted">Título</label>
+            <input type="text" id="filtroTitulo" class="form-control form-control-sm custom-input-filter" placeholder="Buscar por nome...">
+        </div>
+
+        <div class="filter-section mb-3">
+            <label for="filtroData" class="form-label fs-7 fw-medium text-muted">Vencimento / Cadastro</label>
+            <input type="date" id="filtroData" class="form-control form-control-sm custom-input-filter">
+        </div>
+
+        <div class="filter-section mb-10">
+            <label class="form-label fs-7 fw-medium text-muted">Status</label>
+            <div class="d-flex flex-wrap gap-2">
+            <div class="form-check custom-filter-check">
+                    <input class="form-check-input status-checkbox" type="checkbox" value="1" id="statusPendente">
+                    <label class="form-check-label text-muted fs-7" for="statusPendente">Pendente</label>
+                </div>
+                <div class="form-check custom-filter-check">
+                    <input class="form-check-input status-checkbox" type="checkbox" value="2" id="statusExecutando">
+                    <label class="form-check-label text-muted fs-7" for="statusExecutando">Executando</label>
+                </div>
+                <div class="form-check custom-filter-check">
+                    <input class="form-check-input status-checkbox" type="checkbox" value="3" id="statusConcluido">
+                    <label class="form-check-label text-muted fs-7" for="statusConcluido">Concluído</label>
+            </div>
+         
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+            <button type="button" class="btn btn-link text-muted text-decoration-none p-0 fs-7" id="btnLimparFiltro">Limpar tudo</button>
+            <button type="button" class="btn btn-dark btn-sm px-4 rounded-pill" id="btnAplicarFiltro">Aplicar</button>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+    <div class="tasks-horizontal-scroll">
+        <div class="tasks-track">
+            
+            @{ int index = 1; }
+            @foreach (var task in Model)
+            {
+                <a class="task-card shadow-sm"  asp-action="Editar" asp-route-id="@task.Id" >
+                    <div class="task-number">@index.ToString("D2")</div>
+                    
+                    <div class="task-content">
+                        <div class="card-edit-icon">
+            <i class="bi bi-pencil-fill"></i>
+        </div>
+                        @if (!string.IsNullOrWhiteSpace(task.Titulo))
+                        {
+                            <h2 class="task-title text-break">@task.Titulo</h2>
+                        }
+                        else
+                        {
+                            <h2 class="task-title text-placeholder fst-italic">Tarefa sem título</h2>
+                        }
+                        
+                        @if (!string.IsNullOrWhiteSpace(task.Descricao))
+                        {
+                            <p class="task-description">@task.Descricao</p>
+                        }
+                        else
+                        {
+                            <p class="task-description text-placeholder fst-italic">
+                                <i class="bi bi-info-circle me-1"></i>Nenhum detalhe adicional fornecido para esta tarefa.
+                            </p>
+                        }
+
+                        <div class="task-metadata mt-auto pt-3">
+                            <div class="meta-item">
+                                <i class="bi bi-calendar3 me-2"></i>
+                                @if (task.Vencimento.HasValue)
+                                {
+                                    <span class="fw-medium">@task.Vencimento.Value.ToString("dd/MM/yyyy")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-placeholder opacity-50">Sem prazo definido</span>
+                                }
+                            </div>
+                            
+                            <div class="meta-item mt-2">
+                                <span class="badge-status">
+                                    <i class="bi bi-circle-fill me-2 tiny-dot"></i> @task.Status
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="task-team mt-3 border-top pt-3">
+                            @if (task.ContatosEnvolvidos != null && task.ContatosEnvolvidos.Any())
+                            {
+                                <div class="avatar-stack">
+                                    @foreach(var contato in task.ContatosEnvolvidos.Take(3)) {
+                                        <div class="avatar-mini" title="@contato.Nome">@contato.Nome.Substring(0,1).ToUpper()</div>
+                                    }
+                                    @if(task.ContatosEnvolvidos.Count() > 3) {
+                                        <div class="avatar-mini more">+@(task.ContatosEnvolvidos.Count() - 3)</div>
+                                    }
+                                    <span class="ms-2 small text-muted">@task.ContatosEnvolvidos.Count() com a tarefa</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-placeholder small opacity-50">
+                                    <i class="bi bi-person-dash me-1"></i>Sem contatos atribuídos
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+
+                </a>
+                index++;
+            }
+
+            <a asp-action="Criar" class="add-task-card">
+                <div class="add-icon-wrapper">
+                    <i class="bi bi-plus-lg"></i>
+                </div>
+                <span class="fw-bold mt-2">Criar Tarefa</span>
+            </a>
+        </div>
+    </div>
+
+ 
+
+
+@if (TempData["ExcluirTarefa"]?.ToString() == "1")
+{
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <div id="toastNotificacao" class="toast align-items-center text-white bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+            <div class="d-flex">
+                <div class="toast-body fw-medium">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i> Tarefa apagada com sucesso!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+// Um único DOMContentLoaded para garantir que todo o HTML carregou primeiro
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ==========================================
+    // 1. SCROLL HORIZONTAL
+    // ==========================================
+    const container = document.querySelector('.tasks-horizontal-scroll');
+
+    // Apenas aplica o evento se o container existir na tela atual
+    if (container) {
+        container.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                container.scrollLeft += e.deltaY;
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. FILTRO DA LISTA
+    // ==========================================
+    const btnLimpar = document.getElementById('btnLimparFiltro');
+    const btnAplicar = document.getElementById('btnAplicarFiltro');
+    const badge = document.getElementById('badgeFiltroAtivo');
+    
+    const inputTitulo = document.getElementById('filtroTitulo');
+    const inputData = document.getElementById('filtroData');
+    const checkboxesStatus = document.querySelectorAll('.status-checkbox');
+
+    // Aplicar Filtro
+    if (btnAplicar) {
+        btnAplicar.addEventListener('click', function () {
+            const titulo = inputTitulo.value.trim();
+            const data = inputData.value;
+            
+            const params = new URLSearchParams();
+            
+const urlAtual = new URLSearchParams(window.location.search);
+    if (urlAtual.has('visao')) {
+        params.append('visao', urlAtual.get('visao'));
+    }
+
+            if (titulo) params.append('titulo', titulo);
+            if (data) params.append('data', data);
+            
+            checkboxesStatus.forEach(chk => {
+                if (chk.checked) {
+                    params.append('status', chk.value); 
+                }
+            });
+
+            const urlBase = window.location.pathname;
+            window.location.href = urlBase + '?' + params.toString();
+        });
+    }
+
+    // Limpar Filtro
+if (btnLimpar) {
+    btnLimpar.addEventListener('click', function () {
+        const urlAtual = new URLSearchParams(window.location.search);
+        let novaUrl = window.location.pathname; // Ex: /Tarefa
+
+        // Se o usuário estava em uma aba específica (ex: atrasadas), nós guardamos ela!
+        if (urlAtual.has('visao')) {
+            novaUrl += '?visao=' + urlAtual.get('visao');
+        }
+
+        // Redireciona mantendo a aba, mas sem os filtros de título, data e status
+        window.location.href = novaUrl; 
+    });
+}
+
+    // Manter Estado Visual
+    const urlParams = new URLSearchParams(window.location.search);
+    let temFiltroAtivo = false;
+
+    if (urlParams.has('titulo')) {
+        inputTitulo.value = urlParams.get('titulo');
+        temFiltroAtivo = true;
+    }
+    
+    if (urlParams.has('data')) {
+        inputData.value = urlParams.get('data');
+        temFiltroAtivo = true;
+    }
+    
+    if (urlParams.has('status')) {
+        const statusNaUrl = urlParams.getAll('status'); 
+        
+        checkboxesStatus.forEach(chk => {
+            if (statusNaUrl.includes(chk.value)) {
+                chk.checked = true;
+            }
+        });
+        temFiltroAtivo = true;
+    }
+
+    // Se identificamos que a URL tem filtros, acendemos a bolinha azul
+    if (temFiltroAtivo && badge) {
+        badge.classList.remove('d-none');
+    }
+
+}); // <-- O ÚNICO fechamento correto do DOMContentLoaded no final de tudo!
+
+btnAplicar.addEventListener('click', function () {
+    const params = new URLSearchParams(window.location.search); // Pega o que já está na URL (inclusive a aba atual!)
+    
+    // Atualiza os campos de texto e status
+    params.set('titulo', inputTitulo.value.trim());
+ 
+  
+
+    window.location.href = window.location.pathname + '?' + params.toString();
+});
+
+// UX: ABRIR CALENDÁRIO COM CLIQUE NO CAMPO TODO
+// ==========================================
+
+// 1. Faz com que clicar em qualquer lugar do input de data abra o calendário
+document.querySelectorAll('input[type="date"]').forEach(function(dateInput) {
+    dateInput.addEventListener('click', function(e) {
+        // Verifica se o navegador suporta a função (browsers modernos suportam)
+        if (typeof this.showPicker === 'function') {
+            this.showPicker();
+        }
+    });
+});
+
+// 2. Opcional: Se você usa o ícone colado no input (input-group-text), 
+// faz com que clicar no seu ícone customizado também abra o calendário!
+document.querySelectorAll('.input-group-text').forEach(function(iconWrapper) {
+    iconWrapper.addEventListener('click', function() {
+        // Procura o input de data que está logo depois do ícone
+        const input = this.nextElementSibling;
+        if (input && input.type === 'date' && typeof input.showPicker === 'function') {
+            input.showPicker();
+        }
+    });
+});
+</script>
