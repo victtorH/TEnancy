@@ -15,29 +15,32 @@ namespace ModuloMVC.Context
         }
 
         public DbSet<Contato> Contato { get; set; }
-        public DbSet<Tarefa> Tarefa {get; set;}
+        public DbSet<Tarefa> Tarefa { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        // --- CONFIGURAÇÃO DA TAREFA DIRETO NO DBCONTEXT ---
-        
-        var tarefaBuilder = modelBuilder.Entity<Tarefa>();
-        
-        tarefaBuilder.HasKey(t => t.Id);
+            // --- CONFIGURAÇÃO DA TAREFA DIRETO NO DBCONTEXT ---
 
-        tarefaBuilder.Property(t => t.Titulo).IsRequired(false).HasMaxLength(200);
-        tarefaBuilder.Property(t => t.Descricao).IsRequired(false).HasMaxLength(2000);
+            var tarefaBuilder = modelBuilder.Entity<Tarefa>();
 
-        // A trava de segurança no banco que conversamos
-        tarefaBuilder.HasCheckConstraint("CK_Tarefa_TituloOuDescricao_Requerido", 
-            "([Titulo] IS NOT NULL AND [Titulo] <> '') OR ([Descricao] IS NOT NULL AND [Descricao] <> '')");
+            tarefaBuilder.HasKey(t => t.Id);
 
-        // Ensinando o EF Core a ler a sua lista privada (Backing Field)
-        tarefaBuilder.Navigation(t => t.ContatosEnvolvidos)
-                     .HasField("_contatosEnvolvidos")
-                     .UsePropertyAccessMode(PropertyAccessMode.Field);
+            tarefaBuilder.Property(t => t.Titulo).IsRequired(false).HasMaxLength(200);
+            tarefaBuilder.Property(t => t.Descricao).IsRequired(false).HasMaxLength(2000);
+
+            // A trava de segurança no banco que conversamos
+            tarefaBuilder.HasCheckConstraint("CK_Tarefa_TituloOuDescricao_Requerido",
+                "([Titulo] IS NOT NULL AND [Titulo] <> '') OR ([Descricao] IS NOT NULL AND [Descricao] <> '')");
+
+            // Ensinando o EF Core a ler a sua lista privada (Backing Field)
+            tarefaBuilder.Navigation(t => t.ContatosEnvolvidos)
+                         .HasField("_contatosEnvolvidos")
+                         .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            tarefaBuilder.Property(t => t.Status)
+                        .HasConversion<string>();
+        }
     }
-}
 }
