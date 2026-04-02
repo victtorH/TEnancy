@@ -2,7 +2,137 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Olá Victtor</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<div class="landing-container">
+    <section class="landing-header d-flex flex-wrap align-items-center animate-on-scroll">
+        <div class="header-content col-lg-6 col-12 pe-lg-5">
+            <h1 class="landing-title">Sua vida e contatos organizados em um só lugar</h1>
+            
+            <div class="stats-row mt-4 d-flex gap-4">
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Personalizado</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">+UX</span>
+                    <span class="stat-label">Focado no Usuário</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-features col-lg-6 col-12 ps-lg-4 mt-5 mt-lg-0">
+            <div class="feature-block mb-4">
+                <div class="feature-icon"><i class="bi bi-bullseye"></i></div>
+                <div>
+                    <h5 class="feature-title">Objetivos Claros</h5>
+                    <p class="feature-text">Desenvolvido para que você gerencie suas anotações e contatos sem distrações, direto ao ponto.</p>
+                </div>
+            </div>
+            <div class="feature-block">
+                <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                <div>
+                    <h5 class="feature-title">Evolução Contínua</h5>
+                    <p class="feature-text">Um sistema desenhado para crescer com a sua necessidade de organização diária.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-hero animate-on-scroll">
+        <div class="hero-badge">A Jornada do Código</div>
+        <div class="hero-content d-flex flex-wrap align-items-center">
+            <div class="col-lg-6 col-12 pe-lg-5">
+                <h2 class="hero-title">Mais do que estética, uma história de persistência</h2>
+                <p class="hero-text">
+                    Por trás desta interface minimalista, houve noites de estudo, bugs resolvidos e muita superação. 
+                    Este projeto pessoal nasceu da vontade de aprender a unir uma arquitetura sólida em C# com a melhor 
+                    experiência de usuário possível. Cada detalhe foi pensado com dedicação.
+                </p>
+                <a href="/Tarefa" class="btn-muted-blue mt-3">Acessar Sistema</a>
+            </div>
+            <div class="col-lg-6 col-12 mt-5 mt-lg-0 d-flex justify-content-center">
+                <div class="css-ui-mockup shadow-lg">
+                    <div class="mockup-header">
+                        <i class="bi bi-list"></i> Resumo de Hoje
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-line w-75"></div>
+                        <div class="mockup-line w-50"></div>
+                        <div class="mockup-card mt-4">
+                            <span>Tarefas Concluídas</span>
+                            <span class="mockup-highlight">@DateTime.Today.ToString("dd/MM")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-grid mt-5 d-flex flex-wrap gap-4 animate-on-scroll">
+        <div class="grid-card flex-fill">
+            <div class="card-icon"><i class="bi bi-shield-check"></i></div>
+            <h4 class="card-title">Estabilidade e Foco</h4>
+            <p class="card-text">Padrões de projeto aplicados para garantir que suas anotações estejam sempre disponíveis e seguras.</p>
+            <a href="/Contato" class="card-link">Ver Contatos <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="grid-card flex-fill">
+            <div class="card-icon"><i class="bi bi-grid-1x2"></i></div>
+            <h4 class="card-title">Layout Inteligente</h4>
+            <p class="card-text">Navegação horizontal e filtros aplicados seguindo as Heurísticas de Nielsen para facilitar seu uso.</p>
+            <a href="/Tarefa" class="card-link">Ver Tarefas <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <section class="landing-footer-section mt-5 pt-5 d-flex flex-wrap align-items-center animate-on-scroll">
+        <div class="col-lg-5 col-12 d-flex justify-content-center mb-4 mb-lg-0">
+            <div class="connection-graphic">
+                <div class="center-hub"><i class="bi bi-link-45deg"></i></div>
+                <div class="node node-1"></div>
+                <div class="node node-2"></div>
+                <div class="node node-3"></div>
+            </div>
+        </div>
+        <div class="col-lg-7 col-12 ps-lg-5">
+            <h2 class="hero-title text-dark">Conectando ideias e propósitos</h2>
+            <p class="hero-text text-muted">
+                Um espaço construído do zero para refletir organização mental. O estudo de UI/UX aliado à lógica de programação 
+                resultou nesta ferramenta que agora está pronta para uso.
+            </p>
+            <a href="/Tarefa" class="btn-dark-pill mt-3">Começar agora</a>
+        </div>
+    </section>
+
+    <div class="text-center mt-5 pt-5 pb-3">
+        <span class="dev-signature">Desenvolvido com dedicação por Victtor Hugo estevam</span>
+    </div>
 </div>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+   
+    const observerOptions = {
+        root: null, 
+        rootMargin: '0px',
+        threshold: 0.15
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    
+    animatedElements.forEach(el => {
+        observer.observe(el);
+    });
+});
+</script>

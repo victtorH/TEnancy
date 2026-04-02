@@ -1,0 +1,101 @@
+
+@media (max-width: 992px) {
+    .task-form-card,
+    .gestalt-edit-card {
+     padding: 1.5rem; 
+    }
+
+    .data-group, 
+    .contacts-panel {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .btn-create-contact {
+        max-width: 100%;
+        width: 50%;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+    .btn-create-contact .btn-text {
+        opacity: 1;
+        transform: translateX(0);
+        padding-right: 1.5rem;
+    }
+    .btn-create-contact .add-icon-wrapper {
+        transform: rotate(90deg);
+    }
+
+    .tasks-horizontal-scroll {
+        padding: 20px 0;
+    }
+    .tasks-track {
+        gap: 15px;
+    }
+    .task-card {
+        width: 85vw;
+        min-height: 400px;
+        padding: 30px 20px 25px 20px;
+    }
+
+    .task-card:hover {
+        transform: none;
+        margin: 0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+    }
+    .card-edit-icon {
+        opacity: 1; 
+        transform: translateY(0);
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .quick-tabs {
+        flex-wrap: wrap; 
+        justify-content: center;
+    }
+
+    .current-data-section h2 {
+        font-size: 2.2rem;
+    }
+
+    .back-link i {
+        position: static;
+    }
+
+    .action-footer, 
+    .action-group {
+        flex-direction: column;
+        margin: 1.5rem -1.5rem -1.5rem -1.5rem;
+        padding: 1.5rem;
+    }
+
+    .btn-submit-task,
+    .custom-submit-btn,
+    .btn-action {
+        width: 100%;
+        text-align: center;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .status-options-container .row {
+        flex-direction: column; 
+    }
+    .status-card {
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .task-title {
+        font-size: 1.5rem;
+    }
+    
+    .filter-menu {
+        width: 90vw !important;
+        max-width: 320px;
+        right: -10px; 
+    }
+}
