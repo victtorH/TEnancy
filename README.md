@@ -4,7 +4,7 @@ Bem-vindo ao repositório do meu sistema de produtividade e gestão de contatos!
 Meu objetivo aqui é ir além do CRUD básico, documentando minha evolução técnica, testando diferentes versões e, futuramente, implementando testes rigorosos de segurança.\
 </br>
 <img width="1853" height="903" alt="Image" src="https://github.com/user-attachments/assets/4ee1cbb4-f583-481d-8fd3-cfe9391e7916" />
-<img width="700" height="889" alt="Image" src="https://github.com/user-attachments/assets/a38e1d14-d7f8-4043-bb18-dbe9db2e5709" />
+<img width="600" height="889" alt="Image" src="https://github.com/user-attachments/assets/a38e1d14-d7f8-4043-bb18-dbe9db2e5709" />
 <img width="302" height="883" alt="Image" src="https://github.com/user-attachments/assets/685a4ac2-5b37-4f86-bbc3-907329f470e9" />
 ## Tecnologias e Arquitetura em Estudo
 Este projeto está sendo construído para consolidar meus conhecimentos no ecossistema Microsoft e em padrões de projeto.
