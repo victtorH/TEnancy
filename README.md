@@ -8,6 +8,7 @@ Meu objetivo aqui é ir além do CRUD básico, documentando minha evolução té
 <img width="530" height="889" alt="Image" src="https://github.com/user-attachments/assets/a38e1d14-d7f8-4043-bb18-dbe9db2e5709" />
 <img width="1853" height="903" alt="Image" src="https://github.com/user-attachments/assets/4ee1cbb4-f583-481d-8fd3-cfe9391e7916" />
 </br>
+
 ## Tecnologias e Arquitetura em Estudo
 Este projeto está sendo construído para consolidar meus conhecimentos no ecossistema Microsoft e em padrões de projeto.
 
