@@ -22,7 +22,7 @@ Este projeto está sendo construído para consolidar meus conhecimentos no ecoss
 Se quiser clonar este projeto para ver o código em ação, o processo é direto:
 
 1. Certifique-se de ter o SDK do .NET 8 instalado e acesso a uma instância do SQL Server (o LocalDB do Visual Studio funciona perfeitamente).
-2. Faça o clone do repositório: git clone [URL_DO_REPO]
+2. Faça o clone do repositório: git clone https://github.com/victtorH/ModuloMVC.git
 3. Abra a solução no Visual Studio 2022 ou VS Code.
 4. No arquivo appsettings.json, configure a DefaultConnection para apontar para o seu banco de dados.
 5. Certifique-se de que possui o EF Core Tools instalado e adicione os pacotes NuGet na versão 8.0.x: `Microsoft.EntityFrameworkCore.Design` e `Microsoft.EntityFrameworkCore.SqlServer`.
