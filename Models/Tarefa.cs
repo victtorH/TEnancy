@@ -56,10 +56,10 @@ namespace ModuloMVC.Models
 
         public void AtualizarContatos(IEnumerable<Contato> novosContatos)
         {
-            _contatosEnvolvidos.Clear(); // Limpa quem estava na tarefa antes
+            _contatosEnvolvidos.Clear(); 
             foreach (var contato in novosContatos)
             {
-                _contatosEnvolvidos.Add(contato); // Adiciona a nova seleção
+                _contatosEnvolvidos.Add(contato); 
             }
         }
 

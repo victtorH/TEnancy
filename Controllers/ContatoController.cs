@@ -25,10 +25,10 @@ namespace ModuloMVC.Controllers
 
 
 [HttpGet]
-// Os nomes aqui precisam bater com os params.append('nome_aqui', valor) do JS!
+
 public async Task<IActionResult> Index(string? nome, string? numero, string? email, List<bool>? status)
 {
-    // Passamos todos os parâmetros para o Service resolver
+
     var contatosFiltrados = await _service.ListarTodosAsync(nome, numero, email, status);
     
     return View(contatosFiltrados);
@@ -41,7 +41,7 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
         }
 
         [HttpPost("Criar")]
-        public IActionResult Criar(ContatoViewModel contato)
+        public async Task<IActionResult> Criar(ContatoViewModel contato)
         {
             try
             {
@@ -51,7 +51,7 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
 
                 }
                     
-                 _service.CriarUm(contato.Nome,contato.Email,contato.Telefone,contato.Descricao);
+                await  _service.CriarUm(contato.Nome,contato.Email,contato.Telefone,contato.Descricao);
                 return RedirectToAction("Index");
             }
             catch (Exception err)
@@ -63,11 +63,11 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
         }
 
         [HttpGet("Deletar/{id}")]
-        public IActionResult Deletar(int id)
+        public async Task<IActionResult> Deletar(int id)
         {
             try
             {
-                var contato = _service.BuscarPorId(id);
+                var contato = await _service.BuscarPorId(id);
                 return View(contato);
             }
             catch (Exception err)
@@ -78,11 +78,11 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
         }
 
         [HttpPost("Deletar/{id}")]
-        public IActionResult DeletarConfirmado(int id)
+        public async Task<IActionResult> DeletarConfirmado(int id)
         {
             try
             {
-                _service.DeletarUm(id);
+               await  _service.DeletarUm(id);
                 return RedirectToAction("index");
             }
             catch (Exception err)
@@ -93,11 +93,11 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
         }
 
         [HttpGet("Editar/{id}")]
-        public IActionResult Editar(int id)
+        public async Task<IActionResult> Editar(int id)
         {
            try
             {
-                var contato = _service.BuscarPorId(id);
+                var contato = await _service.BuscarPorId(id);
                 return View(contato);
             }
             catch (Exception err)
@@ -108,11 +108,11 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
         }
 
         [HttpPost("Editar/{id}")]
-        public IActionResult SalvarEdicao(int id, ContatoViewModel contato)
+        public async Task<IActionResult> SalvarEdicao(int id, ContatoViewModel contato)
         {
             try
             {
-                _service.EditarUm(id, contato.Nome, contato.Email, contato.Telefone, contato.Status, contato.Descricao );
+              await  _service.EditarUm(id, contato.Nome, contato.Email, contato.Telefone, contato.Status, contato.Descricao );
                 return RedirectToAction("Index");
             }
             catch(Exception err)
@@ -124,11 +124,11 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
         }
 
         [HttpGet("Detalhes/{id}")]
-        public IActionResult Detalhes(int id)
+        public async Task<IActionResult> Detalhes(int id)
         {
            try
             {
-                var contato = _service.BuscarPorId(id);
+                var contato = await _service.BuscarPorId(id);
                 return View(contato);
             }
             catch (Exception err)

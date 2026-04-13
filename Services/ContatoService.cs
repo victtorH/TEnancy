@@ -24,42 +24,39 @@ namespace ModuloMVC.Services
 
         public async Task<List<Contato>> ListarTodosAsync(string? nome, string? numero, string? email, List<bool>? status)
         {
-            // 1. Inicia o IQueryable (O "caderninho de intenções" do EF Core)
-            var query = _context.Contato.AsQueryable();
+            var query = _context.Contato
+            .OrderBy(c => c.Nome)
+            .AsQueryable();
 
-            // 2. Filtro por Nome (Contém a palavra)
             if (!string.IsNullOrWhiteSpace(nome))
             {
                 query = query.Where(c => c.Nome.Contains(nome));
             }
 
-            // 3. Filtro por Telefone/Número (Contém a palavra)
             if (!string.IsNullOrWhiteSpace(numero))
             {
-                query = query.Where(c => c.Telefone.Contains(numero)); // Ajuste "Telefone" se sua propriedade tiver outro nome
+                query = query.Where(c => c.Telefone.Contains(numero)); 
             }
 
-            // 4. Filtro por E-mail (Contém a palavra)
             if (!string.IsNullOrWhiteSpace(email))
             {
                 query = query.Where(c => c.Email.Contains(email));
             }
 
-            // 5. Filtro por Status (Ativo, Inativo, ou ambos se os dois checkboxes estiverem marcados)
+      
             if (status != null && status.Any())
             {
-                // O Contains faz um "IN ('Ativo', 'Inativo')" no SQL!
                 query = query.Where(c => status.Contains(c.Status));
             }
 
-            // 6. Vai ao banco de dados e executa a query final
+           
             return await query.ToListAsync();
         }
 
-        private void ValidarSeJaExiste(string email, string telefone, int idDesconsiderado = 0)
+        private async Task ValidarSeJaExiste(string email, string telefone, int idDesconsiderado = 0)
         {
 
-            bool contatoDuplicado = _context.Contato.Any(c =>
+            bool contatoDuplicado = await _context.Contato.AnyAsync(c =>
                 (c.Email == email || c.Telefone == telefone) &&
                 c.Id != idDesconsiderado);
 
@@ -69,20 +66,20 @@ namespace ModuloMVC.Services
             }
         }
 
-        public void CriarUm(string nome, string email, string telefone, string? descricao)
+        public async Task CriarUm(string nome, string email, string telefone, string? descricao)
         {
-            ValidarSeJaExiste(email, telefone);
+           await ValidarSeJaExiste(email, telefone);
 
-            Contato NovoContato = new Contato(nome, email, telefone, descricao);
+            Contato NovoContato =  new Contato(nome, email, telefone, descricao);
 
-            _context.Contato.Add(NovoContato);
-            _context.SaveChanges();
+           await _context.Contato.AddAsync(NovoContato);
+            await _context.SaveChangesAsync();
         }
 
 
-        public Contato BuscarPorId(int id)
+        public async Task<Contato> BuscarPorId(int id)
         {
-            var contato = _context.Contato.Find(id);
+            var contato = await _context.Contato.FindAsync(id);
             if (contato == null)
             {
                 throw new ArgumentException("Contato solicitado não existe");
@@ -91,23 +88,23 @@ namespace ModuloMVC.Services
             return contato;
         }
 
-        public void DeletarUm(int id)
+        public async Task DeletarUm(int id)
         {
 
-            _context.Contato.Remove(BuscarPorId(id));
-            _context.SaveChanges();
+            _context.Contato.Remove( await BuscarPorId(id));
+      await _context.SaveChangesAsync();
         }
 
 
-        public void EditarUm(int id, string nome, string email, string telefone, bool status, string? descricao)
+        public async Task EditarUm(int id, string nome, string email, string telefone, bool status, string? descricao)
         {
 
-            var contatodb = BuscarPorId(id);
-            ValidarSeJaExiste(contatodb.Nome, contatodb.Email, id);
+            var contatodb = await BuscarPorId(id);
+            await  ValidarSeJaExiste(contatodb.Nome, contatodb.Email, id);
 
 
             contatodb.AtualizarDados(nome, email, telefone, status, descricao);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
 
 

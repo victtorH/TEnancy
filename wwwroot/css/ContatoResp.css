@@ -1,0 +1,158 @@
+
+@media (max-width: 992px) {
+    .container{
+        flex-direction: column;
+    }
+    .page-layout {
+        gap: 2rem;
+        margin-right: 2rem;
+    }
+    
+    .header-section {
+        flex: 0 0 50%;
+    }
+    
+    .subtitle-text {
+        width: 100%; 
+    }
+
+    .dev-signature{
+        margin-bottom: 2rem;
+    }
+    .actions-wrapper{
+        opacity: 1;
+    }
+    .contact-card{
+    opacity: 1;
+    margin: 10px 0px;
+    box-shadow: 0 10px 25px rgba(30, 41, 59, 0.08);
+    border-color: rgba(127, 161, 195, 0.4);
+    }
+
+    
+.contact-card .btn-edit { background: var(--gradient-light); color: var(--accent-color); border: 1px solid rgba(127,161,195,0.3); }
+
+.contact-card .btn-details { background: var(--gradient-dark); color: #ffffff; }
+
+.contact-card .btn-delete { background-color: var(--danger-bg); color: var(--danger-muted); border: 1px solid rgba(217, 119, 119, 0.3); }
+}
+
+@media (max-width: 768px) {
+        .container{
+        flex-direction: column;
+    }
+    .page-layout {
+        flex-direction: column;
+        margin-right: 0;
+        padding-bottom: 2rem;
+        gap: 1.5rem;
+    }
+
+    .header-section {
+        flex: 1 1 100%;
+        padding-right: 0;
+    }
+
+    .main-title {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+    }
+    .main-title .highlight {
+        font-size: 2.8rem;
+    }
+
+    .btn-create-contact {
+        max-width: 100%;
+        width: 100%;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+    .btn-create-contact .btn-text {
+        opacity: 1;
+        transform: translateX(0);
+        padding-right: 1.5rem;
+    }
+    .btn-create-contact .add-icon-wrapper {
+        transform: rotate(90deg);
+    }
+
+    .tasks-horizontal-scroll {
+        height: auto;
+        overflow-y: visible;
+        padding: 10px 0;
+        background-image: none;
+    }
+
+    .contact-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.2rem;
+    }
+
+    .contact-card:hover {
+        margin: 0;
+        transform: none;
+    }
+
+    .tasks-track .contact-card:not(:hover) {
+        transform: none; 
+    }
+
+    .contact-info-group {
+        width: 100%;
+    }
+
+    .contact-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .status-badge {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    .actions-wrapper {
+        width: 100%;
+        justify-content: space-evenly;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .action-footer, 
+    .action-group, 
+    .action-bar {
+        flex-direction: column;
+        gap: 12px;
+        margin: 1.5rem -1.5rem -1.5rem -1.5rem;
+        padding: 1.5rem;
+    }
+    .action-footer .btn, 
+    .action-group .btn, 
+    .action-bar .btn,
+    .delete-container .btn {
+        width: 100%;
+    }
+
+       .filter-menu {
+        width: 90vw !important;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 1.8rem;
+    }
+    .main-title .highlight {
+        font-size: 2.2rem;
+    }
+    
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}

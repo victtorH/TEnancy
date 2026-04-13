@@ -25,47 +25,39 @@ namespace ModuloMVC.Services
 
         public async Task<List<Tarefa>> ListarTodosAsync(string? titulo, DateTime? data, List<StatusTarefa>? status, string? visao)
         {
-            // 1. Inicia a consulta base (O caderninho de anotações do EF Core)
             var query = _context.Tarefa
             .OrderBy(t => t.Vencimento)
             .Include(t => t.ContatosEnvolvidos)
             .AsQueryable();
 
-            // 2. Filtro 1: Título (Procura se a palavra digitada existe no título)
             if (!string.IsNullOrWhiteSpace(titulo))
             {
                 query = query.Where(t => t.Titulo.Contains(titulo));
             }
 
-            // 3. Filtro 2: Data de Vencimento
             if (data.HasValue)
             {
-                // Comparamos apenas a "Date" (dia/mês/ano), ignorando a hora (00:00:00) para evitar bugs de fuso horário
+
                 query = query.Where(t => t.Vencimento.HasValue && t.Vencimento.Value.Date == data.Value.Date);
             }
 
-            // 4. Filtro 3: Status (Pode vir 1, 2 ou 3 checkboxes marcados)
             if (status != null && status.Any())
             {
-                // O Contains aqui funciona magicamente como um "IN (1, 2)" no SQL
+
                 query = query.Where(t => status.Contains(t.Status));
             }
 
-            // 5. Só agora ele vai ao banco de dados e traz os resultados refinados!
             var hoje = DateTime.Today;
 
             if (visao == "atrasadas")
             {
-                // Vencimento menor que hoje (ontem para trás)
                 query = query.Where(t => t.Vencimento.HasValue && t.Vencimento.Value.Date < hoje);
             }
             else if (visao == "hoje")
             {
-                // Vencimento maior ou igual a hoje (hoje e os próximos dias)
-                // OBS: Traz também as tarefas sem vencimento para não sumirem da tela principal
+
                 query = query.Where(t => !t.Vencimento.HasValue || t.Vencimento.Value.Date >= hoje);
             }
-            // Se for "todas", não fazemos nenhum If. O EF Core vai trazer o banco inteiro!
 
             return await query.ToListAsync();
         }
@@ -91,7 +83,7 @@ namespace ModuloMVC.Services
         public async Task<Tarefa> BuscarComContatosPorIdAsync(int id)
         {
             var tarefa = await _context.Tarefa
-                                       .Include(t => t.ContatosEnvolvidos) // A MÁGICA ACONTECE AQUI
+                                       .Include(t => t.ContatosEnvolvidos)
                                        .FirstOrDefaultAsync(t => t.Id == id);
 
             if (tarefa == null) throw new ArgumentException("Tarefa não encontrada.");
@@ -113,11 +105,16 @@ namespace ModuloMVC.Services
 
         public async Task<Tarefa> CriarUmaAsync(string? titulo, string? descricao, DateTime? vencimento, List<int> Ids)
         {
+            await ValidarSeJaExite(titulo, descricao, vencimento);
+
+            if (vencimento < DateTime.Today)
+            {
+                throw new Exception("A data não pode ser anterior a de hoje");
+            }
+
             var contatos = await _context.Contato
                                          .Where(c => Ids.Contains(c.Id))
                                          .ToListAsync();
-
-            await ValidarSeJaExite(titulo, descricao, vencimento);
 
             Tarefa novaTarefa = new Tarefa(titulo, descricao, vencimento);
             foreach (var contato in contatos)
@@ -133,22 +130,24 @@ namespace ModuloMVC.Services
 
         public async Task AtualizarUmaAsync(int id, string? titulo, string? descricao, DateTime? vencimento, StatusTarefa status, List<int> idsContatos)
         {
-            // 1. Busca a tarefa original no banco (já com os contatos atuais usando o .Include)
-            var tarefa = await BuscarComContatosPorIdAsync(id);
 
             await ValidarSeJaExite(titulo, descricao, vencimento, id);
+            if (vencimento < DateTime.Today)
+            {
+                throw new Exception("A data não pode ser anterior a de hoje");
+            }
+
+            var tarefa = await BuscarComContatosPorIdAsync(id);
+
 
             tarefa.AtualizarTarefa(titulo, descricao, vencimento, status);
 
-            // 3. Busca os novos contatos que o usuário marcou nos checkboxes
             var novosContatos = await _context.Contato
                                               .Where(c => idsContatos.Contains(c.Id))
                                               .ToListAsync();
 
-            // 4. Usa o novo método para trocar os contatos
             tarefa.AtualizarContatos(novosContatos);
 
-            // 5. Salva a mágica toda no banco de dados
             _context.Tarefa.Update(tarefa);
             await _context.SaveChangesAsync();
         }

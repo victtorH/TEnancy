@@ -1,256 +1,16 @@
 @model ModuloMVC.ViewModels.TarefaEdicaoViewModel
 
-<style>
-    /* Container e Tipografia Base */
-    .task-edit-container {
-        color: #1a1a1a;
-        /* Preto Base */
-    }
+<link rel="stylesheet" href="~/css/Tarefa.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/TarefaResp.css" asp-append-version="true" />
 
-    /* --- LADO ESQUERDO: Dados --- */
-    .current-data-section h2 {
-        font-weight: 600;
-        font-size: 3.2rem;
-        letter-spacing: -1.5px;
-    }
-
-    .data-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .data-label {
-        display: block;
-        font-size: 0.85rem;
-        color: #6c757d;
-        /* Cinza médio */
-        margin-bottom: 0.2rem;
-        font-weight: 500;
-    }
-
-    .data-value {
-        font-size: 1.1rem;
-        font-weight: 400;
-        margin: 0;
-        color: #1a1a1a;
-    }
-
-    /* --- LADO DIREITO: Formulário --- */
-    .custom-label {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
-    }
-
-    /* Inputs minimalistas (Cinza) com Foco (Azul) */
-    .custom-input {
-        background-color: #f4f4f5;
-        /* Cinza claro idêntico à imagem */
-        border: 1px solid transparent;
-        border-radius: 10px;
-        padding: 0.8rem 1.2rem;
-        font-size: 1rem;
-        color: #1a1a1a;
-        transition: all 0.25s ease;
-    }
-
-    .custom-input:focus {
-        background-color: #ffffff;
-        border-color: #0d6efd;
-        /* Azul de Foco */
-        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
-        /* Halo azul suave */
-        outline: none;
-    }
-
-    /* --- LISTA DE CONTATOS --- */
-    .contact-list-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
-        max-height: 280px;
-        overflow-y: auto;
-        padding-right: 8px;
-        /* Espaço para o scrollbar */
-    }
-
-    /* Customização de Scrollbar para ficar elegante */
-    .contact-list-container::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .contact-list-container::-webkit-scrollbar-thumb {
-        background-color: #cbd5e1;
-        border-radius: 10px;
-    }
-
-    .contact-card {
-        display: block;
-        cursor: pointer;
-        margin: 0;
-    }
-
-    .contact-checkbox {
-        display: none;
-        /* Esconde o checkbox feio nativo */
-    }
-
-    .contact-card-content {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        background-color: #f4f4f5;
-        /* Cinza claro */
-        border-radius: 10px;
-        border: 2px solid transparent;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .contact-avatar {
-        width: 42px;
-        height: 42px;
-        background-color: #e2e8f0;
-        /* Cinza um pouco mais escuro */
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        color: #475569;
-        margin-right: 15px;
-        transition: all 0.2s ease;
-    }
-
-    .contact-info {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .contact-name {
-        font-weight: 600;
-        font-size: 0.95rem;
-        color: #1a1a1a;
-    }
-
-    .contact-email {
-        font-size: 0.8rem;
-        color: #6c757d;
-    }
-
-    /* --- ESTADO SELECIONADO (Usando o AZUL) --- */
-    /* Heurística 1: Visibilidade do status do sistema */
-    .contact-checkbox:checked+.contact-card-content {
-        background-color: rgba(13, 110, 253, 0.05);
-        /* Fundo azul bem claro */
-        border-color: #0d6efd;
-        /* Borda Azul */
-    }
-
-    .contact-checkbox:checked+.contact-card-content .contact-avatar {
-        background-color: #0d6efd;
-        /* Círculo Azul */
-        color: #ffffff;
-        /* Letra Branca */
-    }
-
-    /* --- BOTÃO SUBMIT --- */
-    .custom-submit-btn {
-        background-color: #1a1a1a;
-        /* Preto */
-        color: #ffffff;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 1.05rem;
-        border: none;
-        transition: background-color 0.2s, transform 0.1s;
-    }
-
-    .custom-submit-btn:hover {
-        background-color: #333333;
-        color: #ffffff;
-    }
-
-    .custom-submit-btn:active {
-        transform: scale(0.98);
-        /* Feedback tátil visual */
-    }
-
-    .back-link {
-        color: #797979;
-        /* Cinza médio, elegante e discreto */
-        text-decoration: none;
-        font-weight: 900;
-        transition: color 0.2s ease;
-
-    }
-
-    .back-link svg {
-        position: absolute;
-        top: 8.7rem;
-        left: 15rem;
-    }
-
-    .back-link:hover {
-        color: #1a1a1a;
-        /* Fica preto ao passar o mouse (Feedback visual) */
-        text-decoration: none;
-    }
-
-    /* --- SELEÇÃO DE STATUS (Radio Buttons Segmentados) --- */
-    .status-options-container {
-        width: 100%;
-    }
-
-    .status-radio {
-        display: none;
-        /* Esconde o botão rádio nativo do navegador */
-    }
-
-    .status-card {
-        cursor: pointer;
-        margin: 0;
-        user-select: none;
-        /* Evita que o texto seja selecionado ao clicar rápido */
-    }
-
-    /* Estado Padrão (Inativo - Cinza) - Lei da Similaridade */
-    .status-card-content {
-        background-color: #f4f4f5;
-        border: 2px solid transparent;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: #6c757d;
-        transition: all 0.25s ease;
-    }
-
-    /* Efeito ao passar o mouse */
-    .status-card:hover .status-card-content {
-        background-color: #e2e8f0;
-        color: #1a1a1a;
-    }
-
-    /* Estado Selecionado (Ativo - Preto) - Lei da Figura-Fundo */
-    .status-radio:checked+.status-card-content {
-        background-color: #1a1a1a;
-        color: #ffffff;
-        border-color: #1a1a1a;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        /* Sutil elevação */
-    }
-</style>
 
 <div class="container my-5 task-edit-container">
     <div class="row gx-5">
 
         <div class="col-lg-5 mb-3 mb-md-0 current-data-section">
 
-            <a href="@Url.Action("Index", "Tarefa")" onclick="window.history.back(); return false;" class="back-link d-inline-block mb-3 text-decoration-none text-muted">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                     class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                          d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-                </svg>
+            <a onclick="voltarParaLista(event)" class="back-link d-inline-block mb-3 text-decoration-none text-muted">
+              <i class="bi bi-arrow-left-circle"></i>
             </a>
 
             <h2 class="mb-4">Detalhes da Tarefa</h2>
@@ -310,7 +70,7 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label asp-for="Titulo" class="form-label custom-label">Título</label>
+                        <label asp-for="Titulo" class="editar-form-label custom-label">Título</label>
                         <input type="text" asp-for="Titulo" class="form-control custom-input" required>
                         <span asp-validation-for="Titulo" class="text-danger small"></span>
                     </div>
@@ -318,7 +78,7 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label asp-for="Descricao" class="form-label custom-label">Descrição</label>
+                        <label asp-for="Descricao" class="editar-form-label custom-label">Descrição</label>
                         <textarea asp-for="Descricao" class="form-control custom-input" rows="4" required></textarea>
                         <span asp-validation-for="Descricao" class="text-danger small"></span>
                     </div>
@@ -326,13 +86,13 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <label asp-for="Vencimento" class="form-label custom-label">Vencimento</label>
+                        <label asp-for="Vencimento" class="editar-form-label custom-label">Vencimento</label>
                         <input type="date" asp-for="Vencimento" class="form-control custom-input" required>
                     </div>
                 </div>
 
                 <div class="status-section mb-4">
-                    <label class="form-label custom-label mb-3">Status da Tarefa</label>
+                    <label class="editar-form-label custom-label mb-3">Status da Tarefa</label>
 
                     <div class="status-options-container d-flex gap-2">
                         <label class="status-card flex-fill text-center">
@@ -366,7 +126,7 @@
 
                             <label class="contact-card d-block mb-2">
                                 <input type="checkbox" name="ContatosSelecionadosIds" value="@contato.Id"
-                                       class="contact-checkbox" @(isSelected ? "checked" : "")>
+                                       class="editar-contact-checkbox" @(isSelected ? "checked" : "")>
 
                                 <div class="contact-card-content d-inline-block ms-2">
                                     <span class="contact-name fw-bold">@contato.Nome</span>
@@ -377,7 +137,9 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary custom-submit-btn w-100 py-3" id="btnSubmit">
+                <input type="hidden" id="RotaDeRetorno" asp-for="RotaDeRetorno" value="" />
+
+                <button  type="submit" class="btn btn-primary custom-submit-btn w-100 py-3" id="btnSubmit">
                     <span class="btn-text fw-bold">Salvar Alterações</span>
                 </button>
             </form>
@@ -406,6 +168,7 @@
 
                 <form action="/Tarefa/Excluir" method="post" class="m-0">
                     <input type="hidden" name="Id" value="@Model.Id" />
+                    <input type="hidden" id="RotaDeRetorno" name="RotaDeRetorno" value="" />
                     <button type="submit" class="btn btn-danger" style="border-radius: 8px; font-weight: 500;">Sim,
                         Excluir</button>
                     </form>
@@ -454,7 +217,7 @@
             sections.forEach((section, index) => {
                 section.style.opacity = 0;
                 section.style.transition = `opacity 0.6s ease ${index * 0.1}s`;
-                setTimeout(() => section.style.opacity = 1, 10); // Trigger transition
+                setTimeout(() => section.style.opacity = 1, 10);
             });
 
             const inputs = document.querySelectorAll('.custom-input');
@@ -510,4 +273,15 @@
                 toast.show();
             }
         });
+
+      function voltarParaLista(event){
+        event.preventDefault();
+        var filtrosSalvos = sessionStorage.getItem('CaminhoTarefa') || '';
+        window.location.href = '/Tarefa' + filtrosSalvos;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+        var filtrosSalvos = sessionStorage.getItem('CaminhoTarefa') || '';
+        document.getElementById('RotaDeRetorno').value = '/Tarefa' + filtrosSalvos;
+    });
     </script>

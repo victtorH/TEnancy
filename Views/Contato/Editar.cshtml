@@ -4,74 +4,8 @@
     ViewData["Title"] = "Editar Contato";
 }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-<style>
-    body {
-        background-color: #f8f9fa;
-        color: #333;
-    }
-    
-    .gestalt-edit-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border: none;
-        overflow: hidden;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #495057;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.25 margin-rgba(13, 110, 253, 0.15);
-    }
-
-    .custom-textarea {
-        border-radius: 8px;
-        resize: none;
-        /* Evita que o usuário quebre o layout */
-        height: 150px;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-
-    /* Gestalt: Proximidade e Agrupamento dos botões de ação */
-    .action-group {
-        background-color: #f8f9fa;
-        padding: 1.5rem 2rem;
-        margin: 2rem -2rem -2rem -2rem;
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-    }
-
-    /* Email */
-    /* Detalhe Único: Feedback Visual Dinâmico de Validação */
-    .email-input:valid:not(:placeholder-shown) {
-        border-color: #198754 !important;
-        /* Verde Sucesso do Bootstrap */
-    }
-
-    /* Faz o ícone de 'Check' aparecer suavemente quando o e-mail está correto */
-    .email-input:valid:not(:placeholder-shown)~.validation-indicator .bi-check-circle-fill {
-        opacity: 1;
-        color: #198754;
-        transform: scale(1);
-    }
-
-    .validation-indicator .bi-check-circle-fill {
-        opacity: 0;
-        transform: scale(0.5);
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        /* Efeito "mola" (bounce) */
-    }
-</style>
+<link rel="stylesheet" href="~/css/Contato.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/ContatoResp.css" asp-append-version="true" />
 
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -182,7 +116,7 @@
         </div>
 
         <script>
-            // Heurística de Visibilidade do Status: Contador de caracteres em tempo real
+
             const textarea = document.querySelector('textarea[Name="Descricao"]');
             const charCount = document.getElementById('charCount');
 

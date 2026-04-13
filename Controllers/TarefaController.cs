@@ -22,27 +22,23 @@ namespace ModuloMVC.Controllers
             _service = service;
         }
 
-[HttpGet]
-public async Task<IActionResult> Index(string? titulo, DateTime? data, List<StatusTarefa>? status,string? visao = "hoje")
-{
-    
-    ViewBag.VisaoAtual = visao;
+        [HttpGet]
+        public async Task<IActionResult> Index(string? titulo, DateTime? data, List<StatusTarefa>? status, string? visao = "hoje")
+        {
 
-    var listaFiltrada = await _service.ListarTodosAsync(titulo, data, status, visao);
-    
-    return View(listaFiltrada);
-}
+            ViewBag.VisaoAtual = visao;
+
+            var listaFiltrada = await _service.ListarTodosAsync(titulo, data, status, visao);
+
+            return View(listaFiltrada);
+        }
 
 
 
         [HttpGet("Criar")]
-        // 1. O método precisa ser async porque vamos no banco buscar os contatos
         public async Task<IActionResult> Criar()
         {
-            // 2. Busca os contatos originais (Entidades ricas) lá do banco de dados
-            var contatosDoBanco = await _service.ListarContatos(); // Ou _context.Contatos.ToListAsync();
-
-            // 3. A Tradução: Transforma a lista de 'Contato' em 'ContatoViewModel'
+            var contatosDoBanco = await _service.ListarContatos();
             var contatosParaTela = contatosDoBanco.Select(c => new ContatoViewModel
             {
                 Id = c.Id,
@@ -52,20 +48,19 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
                 Status = c.Status
             }).ToList();
 
-            // 4. Cria a "mala" que vai viajar para a View, já com os contatos dentro
             var viewModel = new TarefaViewModel
             {
                 ContatosEnvolvidos = contatosParaTela
             };
-
 
             return View(viewModel);
         }
 
 
         [HttpPost("Criar")]
-        public async Task<IActionResult> Criar(TarefaViewModel tarefa)
+        public async Task<IActionResult> Criar(string RotaDeRetorno, TarefaViewModel tarefa)
         {
+
             try
             {
                 if (!ModelState.IsValid)
@@ -78,6 +73,10 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
                 var ListaIds = tarefa.ContatosSelecionadosIds ?? new List<int>();
 
                 var TarefaNova = await _service.CriarUmaAsync(tarefa.Titulo, tarefa.Descricao, tarefa.Vencimento, ListaIds);
+
+                if (!string.IsNullOrEmpty(RotaDeRetorno))
+                    return Redirect(RotaDeRetorno);
+
                 return RedirectToAction("Index");
             }
             catch (Exception err)
@@ -85,6 +84,7 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
                 var contatosDoBanco = await _service.ListarContatos();
                 tarefa.ContatosEnvolvidos = contatosDoBanco.Select(c => new ContatoViewModel { Id = c.Id, Nome = c.Nome }).ToList();
                 TempData["CriarDublicado"] = "Erro Mensagem:  " + err.Message;
+
                 return View(tarefa);
             }
 
@@ -94,30 +94,26 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
         [HttpGet("Editar/{id}")]
         public async Task<IActionResult> Editar(int id)
         {
-            // Busca a tarefa e os contatos possíveis
             var tarefa = await _service.BuscarComContatosPorIdAsync(id);
             var contatosDoBanco = await _service.ListarContatos();
 
-            // Monta a mala com os dois lados da tela
+
             var viewModel = new TarefaEdicaoViewModel
             {
                 Id = tarefa.Id,
 
-                // Dados para preencher os Inputs (O que pode mudar)
                 Titulo = tarefa.Titulo,
                 Descricao = tarefa.Descricao,
                 Vencimento = tarefa.Vencimento,
                 Status = tarefa.Status,
                 ContatosSelecionadosIds = tarefa.ContatosEnvolvidos.Select(c => c.Id).ToList(),
 
-                // Dados para o painel esquerdo (A foto de como estava)
                 TituloAtual = tarefa.Titulo,
                 DescricaoAtual = tarefa.Descricao,
                 VencimentoAtual = tarefa.Vencimento,
                 StatusAtual = tarefa.Status,
                 ContatosEnvolvidosAtuais = tarefa.ContatosEnvolvidos.Select(c => new ContatoViewModel { Nome = c.Nome }).ToList(),
 
-                // Contatos para desenhar os checkboxes
                 TodosContatosDisponiveis = contatosDoBanco.Select(c => new ContatoViewModel { Id = c.Id, Nome = c.Nome, Email = c.Email }).ToList()
             };
 
@@ -125,13 +121,12 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
         }
 
         [HttpPost("Editar/{id}")]
-        public async Task<IActionResult> Editar(int id, TarefaEdicaoViewModel model)
+        public async Task<IActionResult> Editar(int id, TarefaEdicaoViewModel model, string RotaDeRetorno)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    // Se der erro, recarregamos as listas para a tela não quebrar
                     var contatosDoBanco = await _service.ListarContatos();
                     model.TodosContatosDisponiveis = contatosDoBanco.Select(c => new ContatoViewModel { Id = c.Id, Nome = c.Nome, Email = c.Email }).ToList();
                     return View(model);
@@ -141,9 +136,13 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
 
                 await _service.AtualizarUmaAsync(id, model.Titulo, model.Descricao, model.Vencimento, model.Status, listaIds);
 
+                if (!string.IsNullOrEmpty(RotaDeRetorno))
+                    return Redirect(RotaDeRetorno);
+
                 return RedirectToAction("Index");
+
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 var contatosDoBanco = await _service.ListarContatos();
                 model.TodosContatosDisponiveis = contatosDoBanco.Select(c => new ContatoViewModel { Id = c.Id, Nome = c.Nome, Email = c.Email }).ToList();
@@ -156,13 +155,17 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
 
 
         [HttpPost("Excluir")]
-        public async Task<IActionResult> Excluir(int id)
+        public async Task<IActionResult> Excluir(int id, string RotaDeRetorno)
         {
             try
             {
                 await _service.ExcluirUm(id);
 
                 TempData["ExcluirTarefa"] = "1";
+
+                if (!string.IsNullOrEmpty(RotaDeRetorno))
+                    return Redirect(RotaDeRetorno);
+
                 return RedirectToAction("Index");
             }
             catch (Exception err)

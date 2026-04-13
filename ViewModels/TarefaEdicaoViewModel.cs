@@ -18,6 +18,8 @@ namespace ModuloMVC.ViewModels
         public DateTime? Vencimento { get; set; }
         public List<int> ContatosSelecionadosIds { get; set; } = new();
 
+        public string? RotaDeRetorno { get; set; }
+
         [ValidateNever] public string? TituloAtual { get; set; }
         [ValidateNever] public string? DescricaoAtual { get; set; }
         [ValidateNever] public DateTime? VencimentoAtual { get; set; }

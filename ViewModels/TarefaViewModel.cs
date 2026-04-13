@@ -14,6 +14,8 @@ namespace ModuloMVC.ViewModels
         public string? Titulo { get; set; }
         public string? Descricao { get; set; }
         public DateTime? Vencimento { get; set; }
+
+        public string? RotaDeRetorno {get; set;}
  
 
       [ValidateNever] 
