@@ -3,12 +3,13 @@
 <link rel="stylesheet" href="~/css/Tarefa.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/TarefaResp.css" asp-append-version="true" />
 
+
 <div class="container my-5 task-edit-container">
     <div class="row gx-5">
 
         <div class="col-lg-5 mb-3 mb-md-0 current-data-section">
 
-            <a href="@Url.Action("Index", "Tarefa")" class="back-link d-inline-block mb-3 text-decoration-none text-muted">
+            <a onclick="voltarParaLista(event)" class="back-link d-inline-block mb-3 text-decoration-none text-muted">
               <i class="bi bi-arrow-left-circle"></i>
             </a>
 
@@ -136,7 +137,9 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary custom-submit-btn w-100 py-3" id="btnSubmit">
+                <input type="hidden" id="RotaDeRetorno" asp-for="RotaDeRetorno" value="" />
+
+                <button  type="submit" class="btn btn-primary custom-submit-btn w-100 py-3" id="btnSubmit">
                     <span class="btn-text fw-bold">Salvar Alterações</span>
                 </button>
             </form>
@@ -165,6 +168,7 @@
 
                 <form action="/Tarefa/Excluir" method="post" class="m-0">
                     <input type="hidden" name="Id" value="@Model.Id" />
+                    <input type="hidden" id="RotaDeRetorno" name="RotaDeRetorno" value="" />
                     <button type="submit" class="btn btn-danger" style="border-radius: 8px; font-weight: 500;">Sim,
                         Excluir</button>
                     </form>
@@ -269,4 +273,15 @@
                 toast.show();
             }
         });
+
+      function voltarParaLista(event){
+        event.preventDefault();
+        var filtrosSalvos = sessionStorage.getItem('CaminhoTarefa') || '';
+        window.location.href = '/Tarefa' + filtrosSalvos;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+        var filtrosSalvos = sessionStorage.getItem('CaminhoTarefa') || '';
+        document.getElementById('RotaDeRetorno').value = '/Tarefa' + filtrosSalvos;
+    });
     </script>

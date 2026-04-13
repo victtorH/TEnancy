@@ -23,6 +23,23 @@ a {
   border-color: #1861ac;
 }
 
+.nav-item{
+  
+  transform: translateY(.5rem);
+  transition: .3S cubic-bezier(0.25, 0.46, 0.45, 0.94);
+opacity: .7;
+  a{
+border-bottom: 2px solid transparent;
+  }
+}
+ .nav-item:hover{
+ opacity: 1;
+  transform: translateY(.3rem) scale(1.1);
+  a{
+ border-bottom: 2px solid #1e293b;
+  }
+ }
+
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
@@ -55,6 +72,13 @@ button.accept-policy {
  position: static;
  flex-direction: column;
   justify-content: center;
+  }
+
+  .nav-item{
+    opacity: 1;
+  }
+    .nav-item:hover{
+      transform: scale(1);
   }
   
 }

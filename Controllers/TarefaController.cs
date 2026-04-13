@@ -22,23 +22,23 @@ namespace ModuloMVC.Controllers
             _service = service;
         }
 
-[HttpGet]
-public async Task<IActionResult> Index(string? titulo, DateTime? data, List<StatusTarefa>? status,string? visao = "hoje")
-{
-    
-    ViewBag.VisaoAtual = visao;
+        [HttpGet]
+        public async Task<IActionResult> Index(string? titulo, DateTime? data, List<StatusTarefa>? status, string? visao = "hoje")
+        {
 
-    var listaFiltrada = await _service.ListarTodosAsync(titulo, data, status, visao);
-    
-    return View(listaFiltrada);
-}
+            ViewBag.VisaoAtual = visao;
+
+            var listaFiltrada = await _service.ListarTodosAsync(titulo, data, status, visao);
+
+            return View(listaFiltrada);
+        }
 
 
 
         [HttpGet("Criar")]
         public async Task<IActionResult> Criar()
         {
-            var contatosDoBanco = await _service.ListarContatos(); 
+            var contatosDoBanco = await _service.ListarContatos();
             var contatosParaTela = contatosDoBanco.Select(c => new ContatoViewModel
             {
                 Id = c.Id,
@@ -53,16 +53,12 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
                 ContatosEnvolvidos = contatosParaTela
             };
 
-        string Caminho = Request.Headers["Reference"].ToString();
-
-        ViewBag.Retorno = string.IsNullOrEmpty(Caminho) ? Url.Action("Index") : Caminho; 
-
             return View(viewModel);
         }
 
 
         [HttpPost("Criar")]
-        public async Task<IActionResult> Criar(TarefaViewModel tarefa)
+        public async Task<IActionResult> Criar(string RotaDeRetorno, TarefaViewModel tarefa)
         {
 
             try
@@ -77,6 +73,10 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
                 var ListaIds = tarefa.ContatosSelecionadosIds ?? new List<int>();
 
                 var TarefaNova = await _service.CriarUmaAsync(tarefa.Titulo, tarefa.Descricao, tarefa.Vencimento, ListaIds);
+
+                if (!string.IsNullOrEmpty(RotaDeRetorno))
+                    return Redirect(RotaDeRetorno);
+
                 return RedirectToAction("Index");
             }
             catch (Exception err)
@@ -84,6 +84,7 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
                 var contatosDoBanco = await _service.ListarContatos();
                 tarefa.ContatosEnvolvidos = contatosDoBanco.Select(c => new ContatoViewModel { Id = c.Id, Nome = c.Nome }).ToList();
                 TempData["CriarDublicado"] = "Erro Mensagem:  " + err.Message;
+
                 return View(tarefa);
             }
 
@@ -120,7 +121,7 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
         }
 
         [HttpPost("Editar/{id}")]
-        public async Task<IActionResult> Editar(int id, TarefaEdicaoViewModel model)
+        public async Task<IActionResult> Editar(int id, TarefaEdicaoViewModel model, string RotaDeRetorno)
         {
             try
             {
@@ -135,9 +136,13 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
 
                 await _service.AtualizarUmaAsync(id, model.Titulo, model.Descricao, model.Vencimento, model.Status, listaIds);
 
+                if (!string.IsNullOrEmpty(RotaDeRetorno))
+                    return Redirect(RotaDeRetorno);
+
                 return RedirectToAction("Index");
+
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 var contatosDoBanco = await _service.ListarContatos();
                 model.TodosContatosDisponiveis = contatosDoBanco.Select(c => new ContatoViewModel { Id = c.Id, Nome = c.Nome, Email = c.Email }).ToList();
@@ -150,13 +155,17 @@ public async Task<IActionResult> Index(string? titulo, DateTime? data, List<Stat
 
 
         [HttpPost("Excluir")]
-        public async Task<IActionResult> Excluir(int id)
+        public async Task<IActionResult> Excluir(int id, string RotaDeRetorno)
         {
             try
             {
                 await _service.ExcluirUm(id);
 
                 TempData["ExcluirTarefa"] = "1";
+
+                if (!string.IsNullOrEmpty(RotaDeRetorno))
+                    return Redirect(RotaDeRetorno);
+
                 return RedirectToAction("Index");
             }
             catch (Exception err)

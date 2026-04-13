@@ -9,6 +9,7 @@
 
 
 
+
     <header class="d-flex flex-column justify-content-center align-items-center text-center mb-5">
         <h1 class="display-6 py-3 fw-bold">Serviço & Tarefas</h1>
 <div class="d-flex justify-content-between align-items-end mb-4">
@@ -36,7 +37,7 @@
             <a asp-action="Criar" class="btn-create-contact">
                <div class="add-icon-wrapper">
                     <i class="bi bi-plus-lg"></i>
-                </div> <span class="btn-text">Novo Contato</span> 
+                </div> <span class="btn-text">Nova Tarefa</span> 
             </a>
 
 
@@ -199,6 +200,13 @@
 
 
 <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+        const filtrosAtuais = window.location.search;
+        
+        sessionStorage.setItem('CaminhoTarefa', filtrosAtuais);
+});
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const container = document.querySelector('.tasks-horizontal-scroll');
@@ -314,4 +322,5 @@ document.querySelectorAll('.home-input-group-text').forEach(function(iconWrapper
         }
     });
 });
+  
 </script>

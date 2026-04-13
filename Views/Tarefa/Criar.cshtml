@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="~/css/Tarefa.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/TarefaResp.css" asp-append-version="true" />
 
+
 <div class="container-fluid criar-page-wrapper px-0">
     <div class="browser-window">
         <header class="text-center border-dark">
@@ -33,117 +34,136 @@
                                           placeholder="Detalhes da tarefa..." rows="3"></textarea>
                                 <span class="text-danger" asp-validation-for="Descricao"></span>
 
-                                <label asp-for="Vencimento" class="criar-form-label text-light">Data de Vencimento</label>
-                                <div class="input-group">
-                                    <span class="criar-input-group-text dark-input border-end-0 text-light"><i
-                                        class="bi bi-calendar3"></i></span>
-                                        <input asp-for="Vencimento" type="date"
-                                               class="form-control form-input dark-input border-start-0" />
+                                <label asp-for="Vencimento" class="criar-form-label text-light">Data de
+                                    Vencimento</label>
+                                    <div class="input-group">
+                                        <span class="criar-input-group-text dark-input border-end-0 text-light"><i
+                                            class="bi bi-calendar3"></i></span>
+                                            <input asp-for="Vencimento" type="date"
+                                                   class="form-control form-input dark-input border-start-0" />
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Vencimento"></span>
                                     </div>
-                                    <span class="text-danger" asp-validation-for="Vencimento"></span>
-                                </div>
-                            </section>
+                                </section>
 
-                            <hr class="border-dark opacity-25 my-4" />
+                                <hr class="border-dark opacity-25 my-4" />
 
-                            <section id="contactsListSection" class="contacts-panel rounded-4 p-3 bg-dark-subtle mb-4">
-                                <h2 class="h5 fw-bold text-light mb-1 contacts-header">Contatos Envolvidos</h2>
-                                <p class="text-muted fs-7 mb-3 subtitle-text">chamar para tarefa</p>
+                                <section id="contactsListSection" class="contacts-panel rounded-4 p-3 bg-dark-subtle mb-4">
+                                    <h2 class="h5 fw-bold text-light mb-1 contacts-header">Contatos Envolvidos</h2>
+                                    <p class="text-muted fs-7 mb-3 subtitle-text">chamar para tarefa</p>
 
-                                <div class="contacts-rows-container">
-                                    @if (Model != null && Model.ContatosEnvolvidos != null &&
-                                    Model.ContatosEnvolvidos.Any())
-                                    {
-                                        @foreach (var contact in Model.ContatosEnvolvidos)
+                                    <div class="contacts-rows-container">
+                                        @if (Model != null && Model.ContatosEnvolvidos != null &&
+                                                                            Model.ContatosEnvolvidos.Any())
                                         {
-                                            bool isChecked = Model.ContatosSelecionadosIds != null &&
-                                    Model.ContatosSelecionadosIds.Contains(contact.Id);
+                                            @foreach (var contact in Model.ContatosEnvolvidos)
+                                            {
+                                                bool isChecked = Model.ContatosSelecionadosIds != null &&
+                                        Model.ContatosSelecionadosIds.Contains(contact.Id);
 
-                                            <div
-                                                class="contact-row d-flex align-items-center justify-content-between py-2 border-bottom border-dark border-opacity-10">
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <div class="avatar-circle">
-                                                        @(string.IsNullOrEmpty(contact.Nome) ? "" : contact.Nome.Substring(0,
-                                                1).ToUpper())
+                                                <div
+                                                    class="contact-row d-flex align-items-center justify-content-between py-2 border-bottom border-dark border-opacity-10">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div class="avatar-circle">
+                                                            @(string.IsNullOrEmpty(contact.Nome) ? "" : contact.Nome.Substring(0,
+                                                    1).ToUpper())
+                                                        </div>
+                                                        <span class="contact-name text-light fw-medium">@contact.Nome</span>
                                                     </div>
-                                                    <span class="contact-name text-light fw-medium">@contact.Nome</span>
-                                                </div>
 
-                                                <div class="form-check m-0 p-0">
-                                                    <input type="checkbox" name="ContatosSelecionadosIds" value="@contact.Id"
-                                                           id="@contact.Id" class="form-check-input criar-contact-checkbox styled-checkbox"
-                                                    @(isChecked ? "checked" : "") />
-                                                    <label class="form-check-label invisible" for="@contact.Id"></label>
+                                                    <div class="form-check m-0 p-0">
+                                                        <input type="checkbox" name="ContatosSelecionadosIds" value="@contact.Id"
+                                                               id="@contact.Id"
+                                                               class="form-check-input criar-contact-checkbox styled-checkbox" @(isChecked
+                                                                                                                                                                                                                ? "checked" : "") />
+                                                        <label class="form-check-label invisible" for="@contact.Id"></label>
+                                                    </div>
                                                 </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="text-center text-muted py-3">Nenhum contato disponível para selecionar.
                                             </div>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <div class="text-center text-muted py-3">Nenhum contato disponível para selecionar.
-                                        </div>
-                                    }
-                                </div>
+                                    </div>
 
-                                <small class="text-muted mt-2 d-block text-center fs-8">Selecione quem participará</small>
-                            </section>
-                            <button type="submit" id="btnSubmitTask"
-                                    class="btn btn-primary btn-submit-task btn-lg px-5 text-light w-100 py-3 rounded-pill fw-bold">
-                                <i class="bi bi-check2-circle me-2 fs-5"></i> Criar Tarefa
-                            </button>
+                                    <small class="text-muted mt-2 d-block text-center fs-8">Selecione quem participará</small>
+                                </section>
+
+                                <input type="hidden" id="RotaDeRetorno" asp-for="RotaDeRetorno" value="" />
+
+                                <button type="submit" id="btnSubmitTask"
+                                        class="btn btn-primary btn-submit-task btn-lg px-5 text-light w-100 py-3 rounded-pill fw-bold">
+                                    <i class="bi bi-check2-circle me-2 fs-5"></i> Criar Tarefa
+                                </button>
 
                         
-                            <div class="secondary-actions d-flex gap-4">
-                                <button type="reset"
-                                        class="btn btn-link text-muted text-decoration-none btn-action fs-7">Limpar</button>
-                                <a asp-action="Index"
-                                   class="btn btn-link text-muted text-decoration-none btn-action fs-7">Cancelar</a>
-                            </div>
+                                <div class="secondary-actions d-flex gap-4">
+                                    <button type="reset"
+                                            class="btn btn-link text-muted text-decoration-none btn-action fs-7">Limpar</button>
+                                    <a onclick="voltarParaLista(event)"
+                                       class="btn btn-link text-muted text-decoration-none btn-action fs-7">Cancelar</a>
+                                </div>
 
-                        </form>
+                            </form>
+                        </div>
                     </div>
-                </div>
 
-                <footer class="text-center py-4 mt-5 border-top border-dark text-muted fs-8">
-                    Sistema de Tarefas | © @DateTime.Now.Year
-                </footer>
+                    <footer class="text-center py-4 mt-5 border-top border-dark text-muted fs-8">
+                        Sistema de Tarefas | © @DateTime.Now.Year
+                    </footer>
+                </div>
             </div>
-        </div>
 
             @if (TempData["CriarDublicado"] != null && TempData["CriarDublicado"].ToString() != "1")
-    {
-        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-            <div id="toastNotificacao" class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert"
-                 aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
-                <div class="d-flex">
-                    <div class="toast-body fw-medium">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["CriarDublicado"]
+            {
+                <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+                    <div id="toastNotificacao" class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert"
+                         aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
+                        <div class="d-flex">
+                            <div class="toast-body fw-medium">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["CriarDublicado"]
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Fechar"></button>
+                        </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                            aria-label="Fechar"></button>
                 </div>
-            </div>
-        </div>
-    }
-
-    <script>
-                document.addEventListener("DOMContentLoaded", function () {
-            var toastEl = document.getElementById('toastNotificacao');
-            if (toastEl) {
-                var toast = new bootstrap.Toast(toastEl);
-                toast.show();
-                resetCreateTaskForm();
             }
-        });
 
-        function resetCreateTaskForm() {
-    const form = document.getElementById('createTaskForm');
+
+            <script>
+                console.log("👉 1. O script acordou!");
+
+                function voltarParaLista(event) {
+                    event.preventDefault();
+                    var filtrosSalvos = sessionStorage.getItem('CaminhoTarefa') || '';
+                    window.location.href = '/Tarefa' + filtrosSalvos;
+                }
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    var filtrosSalvos = sessionStorage.getItem('CaminhoTarefa') || '';
+                    document.getElementById('RotaDeRetorno').value = '/Tarefa' + filtrosSalvos;
+                });
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    var toastEl = document.getElementById('toastNotificacao');
+                    if (toastEl) {
+                        var toast = new bootstrap.Toast(toastEl);
+                        toast.show();
+                        resetCreateTaskForm();
+                    }
+                });
+
+                function resetCreateTaskForm() {
+                    const form = document.getElementById('createTaskForm');
     
-    if (form) {
-        form.reset();
+                    if (form) {
+                        form.reset();
         
-        form.classList.remove('was-validated');
-    }
-}
-    </script>
+                        form.classList.remove('was-validated');
+                    }
+                }
+            </script>
 
