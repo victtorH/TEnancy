@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using ModuloMVC.Enum;
 
 namespace ModuloMVC.Models
@@ -9,9 +10,12 @@ namespace ModuloMVC.Models
     public class Tarefa
     {
         public int Id { get; private set; }
+        public string UserId {get; set;}
+        public IdentityUser User {get; set;}
         public string? Titulo { get; private set; }
         public string? Descricao { get; private set; }
         public DateTime? Vencimento { get; private set; }
+    
         public StatusTarefa Status { get; private set; }
 
         private readonly List<Contato> _contatosEnvolvidos;

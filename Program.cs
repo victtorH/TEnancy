@@ -13,6 +13,7 @@ builder.Services.AddDbContext<AgendaContext>(options =>
 
 builder.Services.AddScoped<ContatoService>();
 builder.Services.AddScoped<TarefaService>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllersWithViews();
 

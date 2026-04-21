@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ModuloMVC.Migrations
 {
     /// <inheritdoc />
-    public partial class TesteCadastro : Migration
+    public partial class MultitenancySemDDD : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,40 +51,6 @@ namespace ModuloMVC.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Contato",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Contato", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tarefa",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Descricao = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
-                    Vencimento = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tarefa", x => x.Id);
-                    table.CheckConstraint("CK_Tarefa_TituloOuDescricao_Requerido", "([Titulo] IS NOT NULL AND [Titulo] <> '') OR ([Descricao] IS NOT NULL AND [Descricao] <> '')");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -102,7 +68,7 @@ namespace ModuloMVC.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,7 +89,7 @@ namespace ModuloMVC.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,7 +109,7 @@ namespace ModuloMVC.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,13 +127,13 @@ namespace ModuloMVC.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,7 +153,55 @@ namespace ModuloMVC.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Contato",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contato", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Contato_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tarefa",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Titulo = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    Vencimento = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tarefa", x => x.Id);
+                    table.CheckConstraint("CK_Tarefa_TituloOuDescricao_Requerido", "([Titulo] IS NOT NULL AND [Titulo] <> '') OR ([Descricao] IS NOT NULL AND [Descricao] <> '')");
+                    table.ForeignKey(
+                        name: "FK_Tarefa_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,13 +219,13 @@ namespace ModuloMVC.Migrations
                         column: x => x.ContatosEnvolvidosId,
                         principalTable: "Contato",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ContatoTarefa_Tarefa_TarefasId",
                         column: x => x.TarefasId,
                         principalTable: "Tarefa",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -254,9 +268,19 @@ namespace ModuloMVC.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Contato_UserId",
+                table: "Contato",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ContatoTarefa_TarefasId",
                 table: "ContatoTarefa",
                 column: "TarefasId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tarefa_UserId",
+                table: "Tarefa",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -284,13 +308,13 @@ namespace ModuloMVC.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Contato");
 
             migrationBuilder.DropTable(
                 name: "Tarefa");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
