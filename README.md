@@ -20,6 +20,8 @@ Este projeto está sendo construído para consolidar meus conhecimentos no ecoss
 
 **Frontend:** Design System construído com CSS puro (usando variáveis globais) e preocupação constante com responsividade e usabilidade (UI/UX).
 
+<img width="2381" height="2136" alt="Image" src="https://github.com/user-attachments/assets/e8e1b4d4-83e9-4bed-a9aa-38e223216189" />
+
 ## Como Rodar Localmente
    
 Se quiser clonar este projeto para ver o código em ação, o processo é direto:
