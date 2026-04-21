@@ -1,0 +1,292 @@
+/* ==========================================================================
+   VARIÁVEIS GLOBAIS (Nova Paleta)
+   ========================================================================== */
+:root {
+    --card-bg: #ffffff;
+    --card-dark: #1e293b; 
+    --accent-color: #7fa1c3; 
+    --accent-color-hover: #6482a3;
+    --text-placeholder: #adb5bd;
+    --gradient-light: linear-gradient(135deg, #f8f9fa 0%, #eef2f6 100%);
+    --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    --gradient-accent: linear-gradient(135deg, #7fa1c3 0%, #6482a3 100%);
+}
+
+/* ==========================================================================
+   RESET E BASE (Acessibilidade e Consistência)
+   ========================================================================== */
+body {
+    background: var(--gradient-light);
+    color: var(--card-dark);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Acessibilidade: Links de Salto para Leitores de Tela e Teclado */
+.sr-only { 
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; 
+    overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; 
+}
+.sr-only-focusable { 
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); 
+}
+.sr-only-focusable:focus { 
+    position: static; width: auto; height: auto; 
+    background: var(--card-dark); color: var(--accent-color); 
+    padding: 1rem; z-index: 1000; display: block; 
+    outline: 3px solid var(--accent-color); 
+}
+
+/* ==========================================================================
+   LAYOUT GERAL (Login e Cadastro)
+   ========================================================================== */
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 8rem);
+}
+
+.shadow-lg { 
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15); /* Sombra baseada no card-dark */
+}
+
+.split-layout { 
+    display: flex; 
+    width: 100%; 
+    max-width: 1100px;
+    border-radius: 24px; 
+    overflow: hidden; 
+    background: var(--card-bg); 
+}
+
+/* ==========================================================================
+   COLUNA DO FORMULÁRIO (Lado Escuro)
+   ========================================================================== */
+.form-column { 
+    flex: 1; 
+    padding: 4rem; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    background: var(--gradient-dark);
+    color: var(--card-bg);
+}
+
+.cadastro-form, .login-form { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 1.8rem; 
+}
+
+/* Inputs */
+.input-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.5rem; 
+}
+
+.input-group label { 
+    color: var(--card-bg); 
+    font-size: 0.95rem; 
+    font-weight: 500; 
+    opacity: 0.9;
+}
+
+.input-group input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px; 
+    padding: 1rem 1.2rem; 
+    color: var(--card-bg); 
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.input-group input::placeholder { 
+    color: var(--text-placeholder); 
+}
+
+.input-group input:focus-visible { 
+    outline: none; 
+    border-color: var(--accent-color); 
+    background: rgba(255, 255, 255, 0.1); 
+    box-shadow: 0 0 0 3px rgba(127, 161, 195, 0.3); /* Hex do accent-color com opacidade */
+}
+
+/* Botões Globais de Ação */
+.btn-submit {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem;
+    padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none;
+    font-weight: bold; font-size: 1.1rem; border: none; cursor: pointer;
+    background: var(--gradient-accent);
+    color: var(--card-bg); /* Texto claro no botão */
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.btn-submit:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 20px rgba(127, 161, 195, 0.4); 
+}
+
+.btn-submit:focus-visible { 
+    outline: 3px solid var(--card-bg); 
+    outline-offset: 4px; 
+}
+
+.btn-icon { 
+    display: flex; align-items: center; justify-content: center; 
+    border-radius: 50%; width: 32px; height: 32px; 
+    background-color: var(--card-dark);
+}
+
+.btn-icon svg {
+    fill: var(--accent-color);
+}
+
+/* ==========================================================================
+   AÇÕES AUXILIARES E LINKS (Lado Escuro)
+   ========================================================================== */
+.form-actions {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: -0.5rem; margin-bottom: 1.5rem;
+}
+
+.btn-back {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-weight: 600; text-decoration: none; margin-bottom: 2rem;
+    align-self: flex-start; color: var(--accent-color);
+    transition: transform 0.2s ease, opacity 0.3s ease;
+}
+.btn-back:hover { transform: translateX(-5px); opacity: 0.8; }
+.btn-back:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 4px; border-radius: 4px; }
+
+/* Checkbox (Acessível) */
+.checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
+.checkbox-group label { cursor: pointer; user-select: none; color: rgba(255, 255, 255, 0.8); }
+.checkbox-group input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 4px; background: rgba(255, 255, 255, 0.05);
+    cursor: pointer; display: grid; place-content: center;
+    transition: all 0.2s ease-in-out; margin: 0;
+}
+.checkbox-group input[type="checkbox"]:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+.checkbox-group input[type="checkbox"]::before {
+    content: ""; width: 10px; height: 10px;
+    transform: scale(0); transition: 120ms transform ease-in-out;
+    background-color: var(--card-bg); transform-origin: center;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.checkbox-group input[type="checkbox"]:checked {
+    background-color: var(--accent-color); border-color: var(--accent-color);
+}
+.checkbox-group input[type="checkbox"]:checked::before { transform: scale(1); }
+
+/* Links */
+.login-prompt { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 1.5rem; font-size: 0.95rem; }
+.text-muted-light { color: rgba(255, 255, 255, 0.7); }
+.link-accent {
+    color: var(--accent-color); font-weight: 700; text-decoration: none; position: relative;
+}
+.link-accent::after {
+    content: ''; position: absolute; width: 100%; height: 2px;
+    bottom: -2px; left: 0; background-color: var(--accent-color);
+    transform: scaleX(0); transform-origin: bottom right; transition: transform 0.3s ease-out;
+}
+.link-accent:hover::after { transform: scaleX(1); transform-origin: bottom left; }
+.link-accent:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 4px; border-radius: 4px; }
+
+/* ==========================================================================
+   COLUNA DE INFORMAÇÕES (Lado Claro)
+   ========================================================================== */
+.info-column { 
+    flex: 1.2; 
+    padding: 4rem; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    background: var(--gradient-light);
+    border-left: 1px solid rgba(30, 41, 59, 0.05); /* Borda sutil usando o card-dark */
+}
+
+.badge-label { 
+    display: inline-flex; align-items: center; gap: 0.5rem; 
+    padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; 
+    font-weight: bold; align-self: flex-start; margin-bottom: 2rem; 
+    border: 1px solid var(--accent-color);
+    background-color: rgba(127, 161, 195, 0.1); /* Accent com opacidade */
+    color: var(--card-dark);
+}
+
+.main-heading { font-size: 3.5rem; line-height: 1.1; margin: 0 0 1.5rem 0; color: var(--card-dark); }
+.text-accent { color: var(--accent-color); }
+.description-text { font-size: 1.1rem; margin-bottom: 3rem; color: var(--card-dark); opacity: 0.85; }
+
+.contact-footer { display: flex; gap: 2rem; font-style: normal; flex-wrap: wrap; }
+.contact-item { display: flex; align-items: center; gap: 0.8rem; font-weight: 500; color: var(--card-dark); }
+.icon-circle { 
+    width: 36px; height: 36px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    background-color: var(--card-dark);
+    color: var(--card-bg);
+}
+
+/* ==========================================================================
+   MENSAGENS DE ERRO E VALIDAÇÃO (Heurística 9)
+   ========================================================================== */
+.text-danger {
+    color: #ff6b6b; /* Vermelho suave que contrasta bem no fundo escuro */
+    font-weight: 500;
+}
+
+.small {
+    font-size: 0.85rem;
+}
+
+.error-message {
+    display: none; /* Oculto por padrão */
+    margin-top: 0.3rem;
+    animation: slideDown 0.3s ease;
+}
+
+/* Estado de erro para o input (Feedback visual claro) */
+.input-error {
+    border-color: #ff6b6b !important;
+    background: rgba(255, 107, 107, 0.05) !important;
+}
+
+.input-error:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3) !important;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   ANIMAÇÕES E RESPONSIVIDADE
+   ========================================================================== */
+.fade-in-element { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+.fade-in-element.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .fade-in-element { transition: none; opacity: 1; transform: none; }
+    .btn-submit, .btn-back, .input-group input, .link-accent::after { transition: none; }
+}
+
+@media (max-width: 968px) {
+    .split-layout { flex-direction: column; }
+    .form-column, .info-column { padding: 2.5rem; border-left: none; }
+}

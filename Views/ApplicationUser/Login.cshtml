@@ -1,0 +1,86 @@
+@{
+    ViewData["Title"] = "Login - Sistema de Usuário";
+}
+
+ <link rel="stylesheet" href="~/css/CadastroELogin.css" asp-append-version="true" />
+
+<main class="page-container flex-center" id="conteudo-principal">
+    <a href="#form-login" class="sr-only-focusable">Pular para o formulário de login</a>
+
+    <div class="split-layout fade-in-element shadow-lg">
+        
+        <section class="form-column bg-gradient-dark" aria-labelledby="form-title">
+            
+            <a asp-controller="Home" asp-action="Index" class="btn-back text-moonstone" aria-label="Voltar para a página inicial">
+                <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                <span>Voltar</span>
+            </a>
+
+            <h2 id="form-title" class="sr-only">Formulário de Login</h2>
+            
+            <form asp-action="Login" method="post" id="form-login" class="cadastro-form">
+                
+                <div class="input-group">
+                    <label for="email">Seu e-mail</label>
+                    <input type="email" id="email" name="email" required aria-required="true" placeholder="exemplo@email.com" autocomplete="email" />
+                    <span class="text-danger small error-message" aria-live="polite">O E-mail é obrigatorio.</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="senha">Sua senha</label>
+                    <input type="password" id="senha" name="senha" required aria-required="true" placeholder="••••••••" autocomplete="current-password" />
+                    <span class="text-danger small error-message" aria-live="polite">A senha é obrigatorio.</span>
+                </div>
+
+                    <div class="form-actions">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="lembrar" name="lembrar" />
+                        <label for="lembrar" class="text-sm text-champagne-muted">Lembrar de mim</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit bg-gradient-moonstone" id="btn-submit-login">
+                    <span class="btn-text">Entrar</span>
+                </button>
+
+                <div class="login-prompt">
+                    <span class="text-champagne-muted">Ainda não tem uma conta?</span>
+                    <a asp-action="Index" class="link-moonstone" aria-label="Ir para a tela de cadastro">
+                        Cadastre-se
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <section class="info-column bg-gradient-champagne">
+            <div class="badge-label bg-moonstone-light">
+                <span aria-hidden="true">👋</span> Bem-vindo de volta
+            </div>
+            
+            <h1 class="main-heading">
+                Acesse sua <br>
+                <span class="text-moonstone">Conta</span>
+            </h1>
+            
+            <p class="description-text">
+                Que bom ver você novamente! Insira suas credenciais para acessar seu painel. Nosso sistema continua garantindo a segurança e eficiência dos seus dados.
+            </p>
+
+            <address class="contact-footer">
+                <div class="contact-item">
+                    <div class="icon-circle bg-gunmetal" aria-hidden="true">📞</div>
+                    <span>+55 (11) 99999-9999</span>
+                </div>
+                <div class="contact-item">
+                    <div class="icon-circle bg-gunmetal" aria-hidden="true">✉️</div>
+                    <span>contato@sistema.com</span>
+                </div>
+            </address>
+        </section>
+
+    </div>
+</main>
+
+<script src="~/js/CadastroELogin.js" asp-append-version="true"></script>

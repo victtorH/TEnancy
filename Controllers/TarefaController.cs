@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using ModuloMVC.Enum;
 using ModuloMVC.Models;
@@ -12,7 +13,7 @@ using ModuloMVC.ViewModels;
 
 namespace ModuloMVC.Controllers
 {
-    [Route("[controller]")]
+    [Authorize]
     public class TarefaController : Controller
     {
         private readonly TarefaService _service;
@@ -35,7 +36,7 @@ namespace ModuloMVC.Controllers
 
 
 
-        [HttpGet("Criar")]
+        [HttpGet]
         public async Task<IActionResult> Criar()
         {
             var contatosDoBanco = await _service.ListarContatos();
@@ -57,7 +58,7 @@ namespace ModuloMVC.Controllers
         }
 
 
-        [HttpPost("Criar")]
+        [HttpPost]
         public async Task<IActionResult> Criar(string RotaDeRetorno, TarefaViewModel tarefa)
         {
 
@@ -91,7 +92,7 @@ namespace ModuloMVC.Controllers
 
         }
 
-        [HttpGet("Editar/{id}")]
+        [HttpGet]
         public async Task<IActionResult> Editar(int id)
         {
             var tarefa = await _service.BuscarComContatosPorIdAsync(id);
@@ -120,7 +121,7 @@ namespace ModuloMVC.Controllers
             return View(viewModel);
         }
 
-        [HttpPost("Editar/{id}")]
+        [HttpPost]
         public async Task<IActionResult> Editar(int id, TarefaEdicaoViewModel model, string RotaDeRetorno)
         {
             try
@@ -154,7 +155,7 @@ namespace ModuloMVC.Controllers
         }
 
 
-        [HttpPost("Excluir")]
+        [HttpPost]
         public async Task<IActionResult> Excluir(int id, string RotaDeRetorno)
         {
             try

@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ModuloMVC.Services;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ModuloMVC.ViewModels;
 
 
 namespace ModuloMVC.Controllers
-{
-    [Route("[controller]")]
+{   [Authorize]
     public class ContatoController : Controller
     {
 
@@ -34,13 +34,13 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
     return View(contatosFiltrados);
 }
 
-        [HttpGet("Criar")]
+        [HttpGet]
         public IActionResult Criar()
         {
             return View();
         }
 
-        [HttpPost("Criar")]
+        [HttpPost]
         public async Task<IActionResult> Criar(ContatoViewModel contato)
         {
             try
@@ -62,7 +62,7 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
 
         }
 
-        [HttpGet("Deletar/{id}")]
+        [HttpGet]
         public async Task<IActionResult> Deletar(int id)
         {
             try
@@ -77,7 +77,7 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
             }
         }
 
-        [HttpPost("Deletar/{id}")]
+        [HttpPost]
         public async Task<IActionResult> DeletarConfirmado(int id)
         {
             try
@@ -92,7 +92,7 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
             }
         }
 
-        [HttpGet("Editar/{id}")]
+        [HttpGet]
         public async Task<IActionResult> Editar(int id)
         {
            try
@@ -107,7 +107,7 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
             }
         }
 
-        [HttpPost("Editar/{id}")]
+        [HttpPost]
         public async Task<IActionResult> SalvarEdicao(int id, ContatoViewModel contato)
         {
             try
@@ -123,7 +123,7 @@ public async Task<IActionResult> Index(string? nome, string? numero, string? ema
 
         }
 
-        [HttpGet("Detalhes/{id}")]
+        [HttpGet]
         public async Task<IActionResult> Detalhes(int id)
         {
            try

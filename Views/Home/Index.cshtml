@@ -49,7 +49,7 @@
                     Este projeto pessoal nasceu da vontade de aprender a unir uma arquitetura sólida em C# com a melhor 
                     experiência de usuário possível. Cada detalhe foi pensado com dedicação.
                 </p>
-                <a href="/Tarefa" class="btn-muted-blue mt-3">Acessar Sistema</a>
+                <a asp-controller="ApplicationUser" asp-action="Index" class="btn-muted-blue mt-3">Acessar Sistema</a>
             </div>
             <div class="col-lg-6 col-12 mt-5 mt-lg-0 d-flex justify-content-center">
                 <div class="css-ui-mockup shadow-lg">
@@ -59,7 +59,7 @@
                     <div class="mockup-body">
                         <div class="mockup-line w-75"></div>
                         <div class="mockup-line w-50"></div>
-                        <a href="/Tarefa?status=3" style="text-decoration: none; color:#fff;" class="mockup-card mt-4">
+                        <a asp-controller="ApplicationUser" asp-action="Index" style="text-decoration: none; color:#fff;" class="mockup-card mt-4">
                             <span>Tarefas Concluídas</span>
                             <span class="mockup-highlight">@DateTime.Today.ToString("dd/MM")</span>
                         </a>
@@ -74,13 +74,13 @@
             <div class="card-icon"><i class="bi bi-shield-check"></i></div>
             <h4 class="card-title">Estabilidade e Foco</h4>
             <p class="card-text">Padrões de projeto aplicados para garantir que suas anotações estejam sempre disponíveis e seguras.</p>
-            <a href="/Contato" class="card-link">Ver Contatos <i class="bi bi-arrow-right"></i></a>
+            <a asp-controller="ApplicationUser" asp-action="Index" class="card-link">Ver Contatos <i class="bi bi-arrow-right"></i></a>
         </div>
         <div class="grid-card flex-fill">
             <div class="card-icon"><i class="bi bi-grid-1x2"></i></div>
             <h4 class="card-title">Layout Inteligente</h4>
             <p class="card-text">Navegação horizontal e filtros aplicados seguindo as Heurísticas de Nielsen para facilitar seu uso.</p>
-            <a href="/Tarefa" class="card-link">Ver Tarefas <i class="bi bi-arrow-right"></i></a>
+            <a asp-controller="ApplicationUser" asp-action="Index" class="card-link">Ver Tarefas <i class="bi bi-arrow-right"></i></a>
         </div>
     </section>
 
@@ -99,7 +99,7 @@
                 Um espaço construído do zero para refletir organização mental. O estudo de UI/UX aliado à lógica de programação 
                 resultou nesta ferramenta que agora está pronta para uso.
             </p>
-            <a href="/Tarefa" class="btn-dark-pill mt-3">Começar agora</a>
+            <a asp-controller="ApplicationUser" asp-action="Index" class="btn-dark-pill mt-3">Começar agora</a>
         </div>
     </section>
 

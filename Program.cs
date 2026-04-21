@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using ModuloMVC.Context;
 using ModuloMVC.Services;
 
@@ -14,6 +15,16 @@ builder.Services.AddScoped<ContatoService>();
 builder.Services.AddScoped<TarefaService>();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+        options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+}
+).AddEntityFrameworkStores<AgendaContext>();
 
 var app = builder.Build();
 

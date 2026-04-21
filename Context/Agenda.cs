@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ModuloMVC.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ModuloMVC.Context
 {
-    public class AgendaContext : DbContext
+    public class AgendaContext : IdentityDbContext<IdentityUser>
     {
         public AgendaContext(DbContextOptions<AgendaContext> options) : base(options)
         {
